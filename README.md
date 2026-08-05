@@ -14,7 +14,7 @@ Aplicación web desarrollada como parte del proyecto individual del bootcamp par
 
 ---
 
-## 🚀 Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 * **HTML5** - Estructura semántica de la aplicación.
 * **CSS3 & Bootstrap 5** - Estilos personalizados, sistema de rejillas y diseño responsivo.
@@ -23,7 +23,7 @@ Aplicación web desarrollada como parte del proyecto individual del bootcamp par
 
 ---
 
-## 📌 Características Principales
+## Características Principales
 
 * **Estructura de Dos Columnas:** Visualización clara dividida entre la lista de tareas y el formulario de registro.
 * **Filtros Avanzados:** Opciones para buscar tareas por texto, estado, prioridad, categoría y fecha.
@@ -31,6 +31,6 @@ Aplicación web desarrollada como parte del proyecto individual del bootcamp par
 
 ---
 
-## 👩‍💻 Autora
+## Autora
 
 Desarrollado por **Vanessa Matallana**.
