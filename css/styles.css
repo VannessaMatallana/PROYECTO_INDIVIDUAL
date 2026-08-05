@@ -1,0 +1,116 @@
+/* ==========================================
+   HOJA DE ESTILOS - PLANIFICADOR DE TAREAS
+   Paleta: Morados, Lilas, Oscuros (Dark/Light Mode)
+   ========================================== */
+
+:root {
+    --primary-purple: #6f42c1;
+    --light-purple: #9b51e0;
+    --pale-lilac: #f3e8ff;
+    --dark-purple: #3b1f66;
+    --accent-red: #ff4d4d;
+    --accent-yellow: #ffc107;
+    --accent-green: #28a745;
+    --bg-body: #f8f9fa;
+    --card-bg: #ffffff;
+    --text-color: #212529;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header personalizado con degradado morado */
+header {
+    background: linear-gradient(135deg, var(--dark-purple), var(--primary-purple)) !important;
+    border-bottom: 3px solid var(--light-purple);
+}
+
+/* Estilos de tarjetas y contenedores */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 6px 16px rgba(111, 66, 193, 0.15);
+}
+
+/* Fondos sutiles en tonos lilas */
+.bg-secondary-subtle {
+    background-color: var(--pale-lilac) !important;
+    border: 1px solid #e2d9f3;
+}
+
+/* Botones principales personalizados */
+.btn-dark {
+    background-color: var(--dark-purple);
+    border-color: var(--dark-purple);
+    transition: background-color 0.2s;
+}
+
+.btn-dark:hover {
+    background-color: var(--primary-purple);
+    border-color: var(--primary-purple);
+}
+
+/* Botones de filtros */
+.btn-outline-secondary {
+    color: var(--dark-purple);
+    border-color: #d1b3ff;
+}
+
+.btn-outline-secondary:hover, 
+.btn-outline-secondary.active {
+    background-color: var(--primary-purple);
+    border-color: var(--primary-purple);
+    color: white;
+}
+
+/* Etiquetas de colores llamativos para clasificar prioridades */
+.badge-priority-alta {
+    background-color: var(--accent-red);
+    color: white;
+    font-weight: 600;
+    padding: 0.4em 0.8em;
+    border-radius: 50rem;
+}
+
+.badge-priority-media {
+    background-color: var(--accent-yellow);
+    color: #212529;
+    font-weight: 600;
+    padding: 0.4em 0.8em;
+    border-radius: 50rem;
+}
+
+.badge-priority-baja {
+    background-color: var(--accent-green);
+    color: white;
+    font-weight: 600;
+    padding: 0.4em 0.8em;
+    border-radius: 50rem;
+}
+
+/* Bordes laterales dinámicos para las tarjetas de tareas según prioridad */
+.border-priority-alta {
+    border-left: 5px solid var(--accent-red) !important;
+}
+
+.border-priority-media {
+    border-left: 5px solid var(--accent-yellow) !important;
+}
+
+.border-priority-baja {
+    border-left: 5px solid var(--accent-green) !important;
+}
+
+/* Estilos para inputs y formularios enfocados */
+.form-control:focus, .form-check-input:focus {
+    border-color: var(--light-purple);
+    box-shadow: 0 0 0 0.25rem rgba(155, 81, 224, 0.25);
+}
