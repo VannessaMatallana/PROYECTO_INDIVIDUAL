@@ -12,8 +12,8 @@ Aplicación web desarrollada como parte del proyecto individual del bootcamp par
 
 * **Gestión de Proyecto (Trello):** [Ver tablero de tareas y seguimiento aquí](https://trello.com/invite/b/6a6ba84e769efa9ecb398488/ATTIe247b474bf5760130655966c3f847425C9A60CB4/proyecto-final-planificador-de-tareas)
 *  **Vista del proyecto** https://vannessamatallana.github.io/PROYECTO_INDIVIDUAL/
+<img width="1044" height="621" alt="image" src="https://github.com/user-attachments/assets/5e0753bb-32ee-4275-95c9-c50e21ab9536" />
 
-*  <img width="1360" height="633" alt="image" src="https://github.com/user-attachments/assets/4f139b0c-9bac-47df-b981-1dcfdad2f6c2" />
 ---
 
 ## Tecnologías Utilizadas
