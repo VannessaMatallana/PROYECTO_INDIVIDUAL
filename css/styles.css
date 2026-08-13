@@ -1,67 +1,62 @@
-/* ==========================================
-   HOJA DE ESTILOS - PLANIFICADOR DE TAREAS
-   Paleta: Morados, Lilas, Oscuros (Dark/Light Mode)
-   ========================================== */
-
 :root {
-    --primary-purple: #6f42c1;
-    --light-purple: #9b51e0;
-    --pale-lilac: #f3e8ff;
-    --dark-purple: #3b1f66;
-    --accent-red: #ff4d4d;
-    --accent-yellow: #ffc107;
-    --accent-green: #28a745;
-    --bg-body: #f8f9fa;
+    --primary-purple: #4a154b;
+    --light-purple: #d1d2d9;
+    --pale-lilac: #f4ede4;
+    --dark-purple: #120313;
+    --accent-coral: #ff6b6b;
+    --accent-blue: #2ab7ca;
+    --accent-purple: #7b2cbf;
+    --bg-body: #f8f6f0;
     --card-bg: #ffffff;
-    --text-color: #212529;
+    --text-color: #1d1c1d;
 }
 
 body {
     background-color: var(--bg-body);
     color: var(--text-color);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-/* Header personalizado con degradado morado */
 header {
     background: linear-gradient(135deg, var(--dark-purple), var(--primary-purple)) !important;
-    border-bottom: 3px solid var(--light-purple);
+    border-bottom: 4px solid var(--accent-coral);
+    box-shadow: 0 4px 20px rgba(74, 21, 75, 0.2);
 }
 
-/* Estilos de tarjetas y contenedores */
 .card {
     border: none;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(74, 21, 75, 0.08);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
-    box-shadow: 0 6px 16px rgba(111, 66, 193, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(74, 21, 75, 0.15);
 }
 
-/* Fondos sutiles en tonos lilas */
 .bg-secondary-subtle {
     background-color: var(--pale-lilac) !important;
-    border: 1px solid #e2d9f3;
+    border: 2px solid #e2dac9;
 }
 
-/* Botones principales personalizados */
 .btn-dark {
-    background-color: var(--dark-purple);
-    border-color: var(--dark-purple);
-    transition: background-color 0.2s;
+    background-color: var(--primary-purple);
+    border-color: var(--primary-purple);
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
 }
 
 .btn-dark:hover {
-    background-color: var(--primary-purple);
-    border-color: var(--primary-purple);
+    background-color: var(--dark-purple);
+    border-color: var(--dark-purple);
 }
 
-/* Botones de filtros */
 .btn-outline-secondary {
-    color: var(--dark-purple);
-    border-color: #d1b3ff;
+    color: var(--primary-purple);
+    border-color: #c9b9d3;
+    border-radius: 8px;
 }
 
 .btn-outline-secondary:hover, 
@@ -71,46 +66,55 @@ header {
     color: white;
 }
 
-/* Etiquetas de colores llamativos para clasificar prioridades */
 .badge-priority-alta {
-    background-color: var(--accent-red);
-    color: white;
-    font-weight: 600;
-    padding: 0.4em 0.8em;
+    background-color: rgba(255, 107, 107, 0.15);
+    color: #c93b3b;
+    font-weight: 700;
+    padding: 0.35em 0.8em;
     border-radius: 50rem;
+    font-size: 0.75rem;
+    border: 1px solid rgba(255, 107, 107, 0.3);
 }
 
 .badge-priority-media {
-    background-color: var(--accent-yellow);
-    color: #212529;
-    font-weight: 600;
-    padding: 0.4em 0.8em;
+    background-color: rgba(123, 44, 191, 0.15);
+    color: #5a189a;
+    font-weight: 700;
+    padding: 0.35em 0.8em;
     border-radius: 50rem;
+    font-size: 0.75rem;
+    border: 1px solid rgba(123, 44, 191, 0.3);
 }
 
 .badge-priority-baja {
-    background-color: var(--accent-green);
-    color: white;
-    font-weight: 600;
-    padding: 0.4em 0.8em;
+    background-color: rgba(42, 183, 202, 0.15);
+    color: #1d7885;
+    font-weight: 700;
+    padding: 0.35em 0.8em;
     border-radius: 50rem;
+    font-size: 0.75rem;
+    border: 1px solid rgba(42, 183, 202, 0.3);
 }
 
-/* Bordes laterales dinámicos para las tarjetas de tareas según prioridad */
 .border-priority-alta {
-    border-left: 5px solid var(--accent-red) !important;
+    border-left: 6px solid var(--accent-coral) !important;
 }
 
 .border-priority-media {
-    border-left: 5px solid var(--accent-yellow) !important;
+    border-left: 6px solid var(--accent-purple) !important;
 }
 
 .border-priority-baja {
-    border-left: 5px solid var(--accent-green) !important;
+    border-left: 6px solid var(--accent-blue) !important;
 }
 
-/* Estilos para inputs y formularios enfocados */
-.form-control:focus, .form-check-input:focus {
-    border-color: var(--light-purple);
-    box-shadow: 0 0 0 0.25rem rgba(155, 81, 224, 0.25);
+.form-control, .form-select {
+    border-radius: 10px;
+    border: 1px solid #d4ccd9;
+    padding: 0.6rem 0.9rem;
+}
+
+.form-control:focus, .form-select:focus, .form-check-input:focus {
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(74, 21, 75, 0.15);
 }

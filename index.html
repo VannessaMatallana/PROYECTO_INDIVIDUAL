@@ -15,21 +15,21 @@
 
             <div class="d-flex align-items-center gap-2">
                 <div class="badge bg-light text-dark px-3 py-2 fw-bold">
-                    📋 Tareas: 0
+                    📋 Tareas: 5
                 </div>
                 <button class="btn btn-outline-light btn-sm" id="btn-modo">Modo Oscuro</button>
             </div>
         </div>
     </header>
 
-    <main class="container">
-        <div class="row g-4">
+    <main class="container mb-5">
+        <div class="row gx-4 gy-4 align-items-start">
             
-            <section class="col-lg-7">
+            <section class="col-md-7">
                 <div class="card shadow-sm p-4 bg-secondary-subtle">
                     <h2 class="h5 mb-3 text-secondary fw-bold">LISTA DE TAREAS</h2>
                     
-                    <div class="mb-4 p-3 bg-white rounded shadow-sm">
+                    <div class="mb-4 p-3 bg-white rounded-4 shadow-sm">
                         <div class="mb-3">
                             <label for="buscarTarea" class="form-label text-muted small fw-bold">BUSCAR TAREA</label>
                             <input type="text" class="form-control form-control-sm" id="buscarTarea" placeholder="Escribe para buscar por nombre...">
@@ -71,29 +71,122 @@
                     </div>
 
                     <div id="contenedor-tareas">
-                        <div class="alert alert-light text-center border text-muted py-4" role="alert">
-                            No hay tareas registradas todavía. ¡Agrega una nueva tarea usando el formulario!
+
+                        <div class="card mb-3 shadow-sm border-priority-alta">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h5 class="card-title h6 fw-bold">Comprar materiales para proyecto</h5>
+                                    <span class="badge-priority-alta">Alta</span>
+                                </div>
+                                <p class="card-text text-muted small mb-1">Adquirir telas e implementos de costura para mi emprendimiento.</p>
+                                <p class="card-text text-secondary small mb-2"> Fecha: 2026-06-15 |  Categoría: Estudio</p>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="check1">
+                                        <label class="form-check-label small" for="check1">Completada</label>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm">Eliminar</button>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="card mb-3 shadow-sm border-priority-media">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h5 class="card-title h6 fw-bold">Revisar repositorio en GitHub</h5>
+                                    <span class="badge-priority-media">Media</span>
+                                </div>
+                                <p class="card-text text-muted small mb-1">Actualizar los commits y verificar que la rama principal esté al día.</p>
+                                <p class="card-text text-secondary small mb-2"> Fecha: 2026-06-18 |  Categoría: Desarrollo</p>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="check2">
+                                        <label class="form-check-label small" for="check2">Completada</label>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm">Eliminar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3 shadow-sm border-priority-baja">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h5 class="card-title h6 fw-bold">Organizar escritorio de trabajo</h5>
+                                    <span class="badge-priority-baja">Baja</span>
+                                </div>
+                                <p class="card-text text-muted small mb-1">Limpiar el área y ordenar los apuntes de la clase de Java.</p>
+                                <p class="card-text text-secondary small mb-2"> Fecha: 2026-06-20 |  Categoría: Personal</p>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="check3">
+                                        <label class="form-check-label small" for="check3">Completada</label>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm">Eliminar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3 shadow-sm border-priority-alta">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h5 class="card-title h6 fw-bold">Revisar tareas y talleres pendientes del SENA</h5>
+                                    <span class="badge-priority-alta">Alta</span>
+                                </div>
+                                <p class="card-text text-muted small mb-1">Verificar las tareas y trabajos pendientes y realizarlos antes de la fecha límite.</p>
+                                <p class="card-text text-secondary small mb-2"> Fecha: 2026-06-12 |  Categoría: Bootcamp</p>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="check4" checked>
+                                        <label class="form-check-label small" for="check4">Completada</label>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm">Eliminar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3 shadow-sm border-priority-media">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h5 class="card-title h6 fw-bold">Practicar conversación en portugués</h5>
+                                    <span class="badge-priority-media">Media</span>
+                                </div>
+                                <p class="card-text text-muted small mb-1">Dedicar 30 minutos a la práctica de vocabulario fluido.</p>
+                                <p class="card-text text-secondary small mb-2"> Fecha: 2026-06-16 |  Categoría: Idiomas</p>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="check5">
+                                        <label class="form-check-label small" for="check5">Completada</label>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm">Eliminar</button>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
             </section>
 
-            <section class="col-lg-5">
+            <section class="col-md-5">
                 <div class="card shadow-sm p-4 bg-secondary-subtle">
                     <h2 class="h5 mb-3 text-secondary fw-bold text-center">FORMULARIO NUEVA TAREA</h2>
-                    <form>
+                    
+                    <div id="alertError" class="alert alert-danger d-none" role="alert">
+                        Por favor, completa todos los campos requeridos correctamente.
+                    </div>
+
+                    <form id="taskForm">
                         <div class="mb-3">
-                            <label for="tituloTarea" class="form-label small fw-bold">TITULO DE LA TAREA:</label>
-                            <input type="text" class="form-control" id="tituloTarea" placeholder="Texto...">
+                            <label for="newTaskNameInput" class="form-label small fw-bold">TITULO DE LA TAREA:</label>
+                            <input type="text" class="form-control" id="newTaskNameInput" placeholder="Texto...">
                         </div>
                         <div class="mb-3">
-                            <label for="descripcionTarea" class="form-label small fw-bold">DESCRIPCIÓN DE LA TAREA:</label>
-                            <textarea class="form-control" id="descripcionTarea" rows="2" placeholder="Texto..."></textarea>
+                            <label for="newTaskDescriptionInput" class="form-label small fw-bold">DESCRIPCIÓN DE LA TAREA:</label>
+                            <textarea class="form-control" id="newTaskDescriptionInput" rows="2" placeholder="Texto..."></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="categoriaTarea" class="form-label small fw-bold">CATEGORÍA:</label>
-                            <input type="text" class="form-control" id="categoriaTarea" placeholder="Ej. Estudio, Desarrollo...">
+                            <label for="newTaskCategoryInput" class="form-label small fw-bold">CATEGORÍA:</label>
+                            <input type="text" class="form-control" id="newTaskCategoryInput" placeholder="Ej. Estudio, Desarrollo...">
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold d-block">PRIORIDAD DE LA TAREA:</label>
@@ -111,8 +204,8 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="fechaTarea" class="form-label small fw-bold">FECHA DE ENTREGA:</label>
-                            <input type="date" class="form-control" id="fechaTarea">
+                            <label for="newTaskDateInput" class="form-label small fw-bold">FECHA DE ENTREGA:</label>
+                            <input type="date" class="form-control" id="newTaskDateInput">
                         </div>
                         <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">+ AGREGAR TAREA NUEVA</button>
                     </form>
@@ -123,5 +216,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
