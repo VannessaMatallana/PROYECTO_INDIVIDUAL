@@ -1,15 +1,8 @@
+const taskManager = new TaskManager();
 document.addEventListener('DOMContentLoaded', () => {
-    const taskManager = new TaskManager();
 
-    let tareasIniciales = [
-        { id: 'check1', titulo: 'Comprar materiales para proyecto', descripcion: 'Adquirir telas e implementos de costura para mi emprendimiento.', fecha: '2026-06-15', categoria: 'Estudio', prioridad: 'Alta', completada: false },
-        { id: 'check2', titulo: 'Revisar repositorio en GitHub', descripcion: 'Actualizar los commits y verificar que la rama principal esté al día.', fecha: '2026-06-18', categoria: 'Desarrollo', prioridad: 'Media', completada: false },
-        { id: 'check3', titulo: 'Organizar escritorio de trabajo', descripcion: 'Limpiar el área y ordenar los apuntes de la clase de Java.', fecha: '2026-06-20', categoria: 'Personal', prioridad: 'Baja', completada: false },
-        { id: 'check4', titulo: 'Revisar tareas y talleres pendientes del SENA', descripcion: 'Verificar las tareas y trabajos pendientes y realizarlos antes de la fecha límite.', fecha: '2026-06-12', categoria: 'Bootcamp', prioridad: 'Alta', completada: true },
-        { id: 'check5', titulo: 'Practicar conversación en portugués', descripcion: 'Dedicar 30 minutos a la práctica de vocabulario fluido.', fecha: '2026-06-16', categoria: 'Idiomas', prioridad: 'Media', completada: false }
-    ];
-
-    tareasIniciales.forEach(t => taskManager.tasks.push(t));
+    taskManager.addTask('Comprar materiales para proyecto', 'Adquirir telas e implementos de costura para mi emprendimiento.', '2026-06-15', 'PORHACER');
+    taskManager.addTask('Revisar repositorio en GitHub', 'Actualizar los commits y verificar que la rama principal esté al día.', '2026-06-18', 'PORHACER');
 
     let filtroEstado = 'todas';
 
@@ -32,30 +25,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let tareasFiltradas = taskManager.tasks.filter(tarea => {
             let cumpleEstado = true;
-            if (filtroEstado === 'completadas') cumpleEstado = tarea.completada;
-            if (filtroEstado === 'pendientes') cumpleEstado = !tarea.completada;
+            if (filtroEstado === 'completadas') cumpleEstado = tarea.completada === true;
+            if (filtroEstado === 'pendientes') cumpleEstado = tarea.completada !== true;
 
-            let cumpleBusqueda = tarea.titulo.toLowerCase().includes(textoBusqueda) || 
-                                 tarea.descripcion.toLowerCase().includes(textoBusqueda);
+            let cumpleBusqueda = (tarea.name || tarea.titulo || '').toLowerCase().includes(textoBusqueda) || 
+                                 (tarea.description || tarea.descripcion || '').toLowerCase().includes(textoBusqueda);
 
             let cumplePrioridad = !prioridadFiltro || prioridadFiltro === 'Todas' || tarea.prioridad === prioridadFiltro;
-
             let cumpleCategoria = !categoriaFiltro || categoriaFiltro === 'Todas' || tarea.categoria === categoriaFiltro;
-
-            let cumpleFecha = !fechaFiltro || tarea.fecha === fechaFiltro;
+            let cumpleFecha = !fechaFiltro || (tarea.dueDate || tarea.fecha) === fechaFiltro;
 
             return cumpleEstado && cumpleBusqueda && cumplePrioridad && cumpleCategoria && cumpleFecha;
         });
 
         tareasFiltradas.forEach((tarea) => {
             const indexReal = taskManager.tasks.indexOf(tarea);
+            const tituloMostrar = tarea.name || tarea.titulo;
+            const descripcionMostrar = tarea.description || tarea.descripcion;
+            const fechaMostrar = tarea.dueDate || tarea.fecha;
+            const prioridadMostrar = tarea.prioridad || 'Media';
 
             let clasePrioridad = 'border-priority-baja';
             let claseBadge = 'badge-priority-baja';
-            if (tarea.prioridad === 'Alta') {
+            if (prioridadMostrar === 'Alta') {
                 clasePrioridad = 'border-priority-alta';
                 claseBadge = 'badge-priority-alta';
-            } else if (tarea.prioridad === 'Media') {
+            } else if (prioridadMostrar === 'Media') {
                 clasePrioridad = 'border-priority-media';
                 claseBadge = 'badge-priority-media';
             }
@@ -64,11 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card mb-3 shadow-sm ${clasePrioridad}">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="card-title h6 fw-bold">${tarea.titulo}</h5>
-                            <span class="${claseBadge}">${tarea.prioridad}</span>
+                            <h5 class="card-title h6 fw-bold">${tituloMostrar}</h5>
+                            <span class="${claseBadge}">${prioridadMostrar}</span>
                         </div>
-                        <p class="card-text text-muted small mb-1">${tarea.descripcion}</p>
-                        <p class="card-text text-secondary small mb-2">Fecha: ${tarea.fecha} | Categoría: ${tarea.categoria}</p>
+                        <p class="card-text text-muted small mb-1">${descripcionMostrar}</p>
+                        <p class="card-text text-secondary small mb-2">Fecha: ${fechaMostrar} | Estado: ${tarea.status || 'PORHACER'}</p>
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <div class="form-check">
                                 <input class="form-check-input check-completada" type="checkbox" data-index="${indexReal}" id="check_${indexReal}" ${tarea.completada ? 'checked' : ''}>
@@ -89,34 +84,24 @@ document.addEventListener('DOMContentLoaded', () => {
     taskForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const titulo = document.getElementById('newTaskNameInput').value.trim();
-        const descripcion = document.getElementById('newTaskDescriptionInput').value.trim();
-        const categoria = document.getElementById('newTaskCategoryInput').value.trim();
-        const fecha = document.getElementById('newTaskDateInput').value;
-        
-        const prioridadSeleccionada = document.querySelector('input[name="prioridad"]:checked');
-        const prioridad = prioridadSeleccionada ? prioridadSeleccionada.value : 'Media';
+        const name = document.getElementById('newTaskNameInput').value.trim();
+        const description = document.getElementById('newTaskDescriptionInput').value.trim();
+        const dueDate = document.getElementById('newTaskDateInput').value;
+        const status = 'PORHACER';
 
-        if (!titulo || !descripcion || !categoria || !fecha) {
+        if (!name || !description || !dueDate) {
             alertError.classList.remove('d-none');
             return;
         }
 
         alertError.classList.add('d-none');
 
-        const nuevaTarea = {
-            id: 'check_' + Date.now(),
-            titulo,
-            descripcion,
-            fecha,
-            categoria,
-            prioridad,
-            completada: false
-        };
+        taskManager.addTask(name, description, dueDate, status);
 
-        taskManager.tasks.push(nuevaTarea);
         renderizarTareas();
         taskForm.reset();
+
+        console.log("Array actual en TaskManager:", taskManager.tasks);
     });
 
     contenedorTareas.addEventListener('click', (e) => {
@@ -169,3 +154,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderizarTareas();
 });
+
+
+
+
+        
+
+
+
+
+
+
+
+
+   
