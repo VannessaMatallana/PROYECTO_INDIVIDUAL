@@ -56,24 +56,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const tarjetaHTML = `
-                <div class="card mb-3 shadow-sm ${clasePrioridad}">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="card-title h6 fw-bold">${tituloMostrar}</h5>
-                            <span class="${claseBadge}">${prioridadMostrar}</span>
-                        </div>
-                        <p class="card-text text-muted small mb-1">${descripcionMostrar}</p>
-                        <p class="card-text text-secondary small mb-2">Fecha: ${fechaMostrar} | Estado: ${tarea.status || 'PORHACER'}</p>
-                        <div class="d-flex justify-content-between align-items-center mt-2">
-                            <div class="form-check">
-                                <input class="form-check-input check-completada" type="checkbox" data-index="${indexReal}" id="check_${indexReal}" ${tarea.completada ? 'checked' : ''}>
-                                <label class="form-check-label small" for="check_${indexReal}">Completada</label>
-                            </div>
-                            <button class="btn btn-outline-danger btn-sm btn-eliminar" data-index="${indexReal}">Eliminar</button>
-                        </div>
-                    </div>
+    <div class="card mb-3 shadow-sm ${clasePrioridad}" data-task-id="${tarea.id}">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+                <h5 class="card-title h6 fw-bold">${tituloMostrar}</h5>
+                <span class="${claseBadge}">${prioridadMostrar}</span>
+            </div>
+            <p class="card-text text-muted small mb-1">${descripcionMostrar}</p>
+            <p class="card-text text-secondary small mb-2">Fecha: ${fechaMostrar} | Estado: ${tarea.status || 'PORHACER'}</p>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <div class="form-check">
+                    <input class="form-check-input check-completada" type="checkbox" data-index="${indexReal}" id="check_${indexReal}" ${tarea.completada ? 'checked' : ''}>
+                    <label class="form-check-label small" for="check_${indexReal}">Completada</label>
                 </div>
-            `;
+                <button class="delete-button btn btn-outline-danger btn-sm">Eliminar</button>
+            </div>
+        </div>
+    </div>
+`;
+
             contenedorTareas.innerHTML += tarjetaHTML;
         });
 
@@ -105,12 +106,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     contenedorTareas.addEventListener('click', (e) => {
-        if (e.target.classList.contains('btn-eliminar')) {
-            const index = e.target.getAttribute('data-index');
-            taskManager.tasks.splice(index, 1);
-            renderizarTareas();
+    if (e.target.classList.contains('delete-button')) {
+        const parentTask = e.target.closest('.card');
+        const taskId = Number(parentTask.getAttribute('data-task-id'));
+        
+        taskManager.deleteTask(taskId);
+        if (typeof taskManager.save === 'function') {
+            taskManager.save();
         }
-    });
+        renderizarTareas();
+    }
+});
 
     contenedorTareas.addEventListener('change', (e) => {
         if (e.target.classList.contains('check-completada')) {
