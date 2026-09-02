@@ -4,14 +4,16 @@ class TaskManager {
         this.currentId = currentId;
     }
 
-    addTask(name, description, dueDate, status = 'PORHACER') {
+    addTask(name, description, dueDate, status = 'PORHACER', category = 'General', prioridad = 'Media') {
         this.currentId++;
         const nuevaTarea = {
             id: this.currentId,
             name: name,
             description: description,
             dueDate: dueDate,
-            status: status
+            status: status,
+            categoria: category,
+            prioridad: prioridad
         };
         this.tasks.push(nuevaTarea);
     }
