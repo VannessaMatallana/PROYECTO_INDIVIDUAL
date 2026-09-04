@@ -28,6 +28,16 @@ class TaskManager {
         this.tasks = newTasks;
     }
 
+    getTaskById(taskId) {
+        let foundTask;
+        for (let task of this.tasks) {
+            if (task.id === taskId) {
+                foundTask = task;
+            }
+        }
+        return foundTask;
+    }
+
     save() {
         const tasksJson = JSON.stringify(this.tasks);
         localStorage.setItem('tasks', tasksJson);
@@ -45,3 +55,4 @@ class TaskManager {
         }
     }
 }
+

@@ -16,8 +16,10 @@
         <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h1 class="h3 mb-0">PLANIFICADOR DE TAREAS</h1>
 
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <button id="btnToggleDark" class="btn btn-outline-secondary btn-sm"><i class="bi bi-moon-stars me-1"></i> Modo Oscuro</button>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+                <div id="liveClock" class="navbar-text small text-light mb-0"></div>
+                <button id="btnToggleDark" class="btn btn-outline-secondary btn-sm"><i
+                        class="bi bi-moon-stars me-1"></i></button>
             </div>
         </div>
     </header>
@@ -26,10 +28,10 @@
         <div class="row gx-4 gy-4 align-items-start">
 
             <section class="col-md-7">
-                
+
                 <div class="card shadow-sm p-4 mb-4 bg-white border">
                     <h2 class="h5 mb-3 text-secondary fw-bold"><i class="bi bi-funnel me-1"></i> FILTROS DE TAREAS</h2>
-                    
+
                     <div class="mb-3">
                         <label for="buscarTarea" class="form-label text-muted small fw-bold">BUSCAR TAREA</label>
                         <input type="text" class="form-control form-control-sm" id="buscarTarea"
@@ -72,13 +74,21 @@
                 </div>
 
                 <div class="card shadow-sm p-4 bg-white border">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
-                        <h2 class="h5 mb-0 text-secondary fw-bold"><i class="bi bi-list-check me-1"></i> LISTA DE TAREAS</h2>
-                        
+                    <div
+                        class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
+                        <h2 class="h5 mb-0 text-secondary fw-bold"><i class="bi bi-list-check me-1"></i> LISTA DE TAREAS
+                        </h2>
+
                         <div class="d-flex align-items-center gap-1 flex-wrap">
-                            <span class="badge px-2 py-1 fw-bold" id="counterTotal" style="background-color: var(--light-purple); color: var(--text-color); border: 1px solid var(--card-border-color); font-size: 0.75rem;">Total: 0</span>
-                            <span class="badge px-2 py-1 fw-bold" id="counterPendientes" style="background-color: rgba(255, 107, 107, 0.2); color: var(--accent-coral); border: 1px solid rgba(255, 107, 107, 0.4); font-size: 0.75rem;">Pend: 0</span>
-                            <span class="badge px-2 py-1 fw-bold" id="counterCompletadas" style="background-color: rgba(42, 183, 202, 0.2); color: var(--accent-blue); border: 1px solid rgba(42, 183, 202, 0.4); font-size: 0.75rem;">Comp: 0</span>
+                            <span class="badge px-2 py-1 fw-bold" id="counterTotal"
+                                style="background-color: var(--light-purple); color: var(--text-color); border: 1px solid var(--card-border-color); font-size: 0.75rem;">Total:
+                                0</span>
+                            <span class="badge px-2 py-1 fw-bold" id="counterPendientes"
+                                style="background-color: rgba(255, 107, 107, 0.2); color: var(--accent-coral); border: 1px solid rgba(255, 107, 107, 0.4); font-size: 0.75rem;">Pend:
+                                0</span>
+                            <span class="badge px-2 py-1 fw-bold" id="counterCompletadas"
+                                style="background-color: rgba(42, 183, 202, 0.2); color: var(--accent-blue); border: 1px solid rgba(42, 183, 202, 0.4); font-size: 0.75rem;">Comp:
+                                0</span>
                         </div>
                     </div>
 
@@ -98,89 +108,100 @@
                     <form id="taskForm">
                         <div class="mb-3">
                             <label for="newTaskNameInput" class="form-label small fw-bold">TITULO DE LA TAREA:</label>
-                            <input type="text" class="form-control" id="newTaskNameInput" placeholder="Agrega el titulo...">
+                            <input type="text" class="form-control" id="newTaskNameInput"
+                                placeholder="Agrega el titulo...">
                         </div>
                         <div class="mb-3">
-                            <label for="newTaskDescriptionInput" class="form-label small fw-bold">DESCRIPCIÓN DE LA TAREA:</label>
-                            <textarea class="form-control" id="newTaskDescriptionInput" rows="2" placeholder="Describe tu tarea..."></textarea>
+                            <label for="newTaskDescriptionInput" class="form-label small fw-bold">DESCRIPCIÓN DE LA
+                                TAREA:</label>
+                            <textarea class="form-control" id="newTaskDescriptionInput" rows="2"
+                                placeholder="Describe tu tarea..."></textarea>
                         </div>
 
                         <div class="mb-3">
-                            <label for="newTaskCategorySelect" class="form-label small fw-bold">CATEGORÍA:</label>
-                            <select id="newTaskCategorySelect" class="form-select">
-                                <option value="Trabajo">Trabajo</option>
-                                <option value="Estudio">Estudio</option>
-                                <option value="Personal">Personal</option>
-                                <option value="Otra">Otra...</option>
-                                <option value="Otra">Seleccionar...</option>
-                            </select>
-                        </div>
-                        <div class="mb-3 d-none" id="newTaskOtraContainer">
-                            <label for="newTaskOtraInput" class="form-label small fw-bold">ESPECIFICAR CATEGORÍA:</label>
-                            <input type="text" id="newTaskOtraInput" class="form-control" placeholder="Escribe la nueva categoría">
-                        </div>
+    <label for="newTaskCategorySelect" class="form-label small fw-bold">CATEGORÍA:</label>
+    <select id="newTaskCategorySelect" class="form-select">
+        <option value="" selected disabled>Selecciona...</option>
+        <option value="Trabajo">Trabajo</option>
+        <option value="Personal">Personal</option>
+        <option value="Estudio">Estudio</option>
+        <option value="Otra">Otra</option>
+    </select>
+</div>
 
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold d-block">PRIORIDAD DE LA TAREA:</label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="prioridad" id="prioAlta" value="Alta" checked>
-                                <label class="form-check-label" for="prioAlta">Alta</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="prioridad" id="prioMedia" value="Media">
-                                <label class="form-check-label" for="prioMedia">Media</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="prioridad" id="prioBaja" value="Baja">
-                                <label class="form-check-label" for="prioBaja">Baja</label>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="newTaskDateInput" class="form-label small fw-bold">FECHA DE ENTREGA:</label>
-                            <input type="date" class="form-control" id="newTaskDateInput">
-                        </div>
-                        <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">+ AGREGAR TAREA NUEVA</button>
-                    </form>
-                </div>
+<div class="mb-3 d-none" id="newTaskOtraContainer">
+    <label for="newTaskOtraInput" class="form-label small fw-bold">ESPECIFICAR CATEGORÍA:</label>
+    <input type="text" id="newTaskOtraInput" class="form-control mb-2" placeholder="Escribe la nueva categoría">
+    
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="guardarCategoriaLista" checked>
+        <label class="form-check-label small text-muted" for="guardarCategoriaLista">
+            Guardar en la lista de categorías
+        </label>
+    </div>
+</div>
 
-                <div class="row gx-3">
-                    <div class="col-md-12 mb-3">
-                        <div class="card p-3 shadow-sm bg-white border h-100">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-calendar-event me-1"></i> Calendario Interactivo</h6>
-                                <div class="btn-group btn-group-sm">
-                                    <button id="prevMonth" class="btn btn-outline-secondary py-0 px-1">&lt;</button>
-                                    <span id="currentMonthYear" class="px-2 small fw-bold d-flex align-items-center">Mes 2026</span>
-                                    <button id="nextMonth" class="btn btn-outline-secondary py-0 px-1">&gt;</button>
-                                </div>
-                            </div>
-                            
-                            <div class="calendar-grid text-center small" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;">
-                                <div class="fw-bold text-muted" style="font-size: 0.7rem;">Lu</div>
-                                <div class="fw-bold text-muted" style="font-size: 0.7rem;">Ma</div>
-                                <div class="fw-bold text-muted" style="font-size: 0.7rem;">Mi</div>
-                                <div class="fw-bold text-muted" style="font-size: 0.7rem;">Ju</div>
-                                <div class="fw-bold text-muted" style="font-size: 0.7rem;">Vi</div>
-                                <div class="fw-bold text-muted" style="font-size: 0.7rem;">Sá</div>
-                                <div class="fw-bold text-muted" style="font-size: 0.7rem;">Do</div>
-                            </div>
-                            <div id="calendarDaysContainer" class="calendar-days-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: 4px;">
-                            </div>
-                            <input type="date" id="calendarViewInput" class="d-none">
-                        </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold d-block">PRIORIDAD DE LA TAREA:</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="prioridad" id="prioAlta" value="Alta"
+                            checked>
+                        <label class="form-check-label" for="prioAlta">Alta</label>
                     </div>
-
-                    <div class="col-md-12 mb-3">
-                        <div class="card p-3 shadow-sm post-it-card bg-white border h-100">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-journal-sticky me-1"></i> Notas Rápidas</h6>
-                                <button id="btnAddNote" class="btn btn-sm btn-dark py-0 px-2">+ Nota</button>
-                            </div>
-                            <div id="notesContainer" class="d-flex flex-wrap gap-2"></div>
-                        </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="prioridad" id="prioMedia" value="Media">
+                        <label class="form-check-label" for="prioMedia">Media</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="prioridad" id="prioBaja" value="Baja">
+                        <label class="form-check-label" for="prioBaja">Baja</label>
                     </div>
                 </div>
-            </section>
+                <div class="mb-3">
+                    <label for="newTaskDateInput" class="form-label small fw-bold">FECHA DE ENTREGA:</label>
+                    <input type="date" class="form-control" id="newTaskDateInput">
+                </div>
+                <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">+ AGREGAR TAREA NUEVA</button>
+                </form>
+        </div>
+
+        <div class="col-md-12 mb-3">
+    <div class="card p-3 shadow-sm bg-white border h-100">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-calendar-event me-1"></i> Calendario Interactivo</h6>
+            <div class="btn-group btn-group-sm">
+                <button id="prevMonth" class="btn btn-outline-secondary py-0 px-1">&lt;</button>
+                <span id="currentMonthYear" class="px-2 small fw-bold d-flex align-items-center">Mes 2026</span>
+                <button id="nextMonth" class="btn btn-outline-secondary py-0 px-1">&gt;</button>
+            </div>
+        </div>
+
+        <div class="calendar-grid text-center small mb-1" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;">
+            <div class="fw-bold text-muted" style="font-size: 0.7rem;">Lu</div>
+            <div class="fw-bold text-muted" style="font-size: 0.7rem;">Ma</div>
+            <div class="fw-bold text-muted" style="font-size: 0.7rem;">Mi</div>
+            <div class="fw-bold text-muted" style="font-size: 0.7rem;">Ju</div>
+            <div class="fw-bold text-muted" style="font-size: 0.7rem;">Vi</div>
+            <div class="fw-bold text-muted" style="font-size: 0.7rem;">Sá</div>
+            <div class="fw-bold text-muted" style="font-size: 0.7rem;">Do</div>
+        </div>
+
+        <div id="calendarDaysContainer" class="calendar-days-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;"></div>
+    </div>
+</div>
+
+            <div class="col-md-12 mb-3">
+                <div class="card p-3 shadow-sm post-it-card bg-white border h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="fw-bold mb-0 text-secondary"><i class="bi bi-journal-sticky me-1"></i> Notas
+                            Rápidas</h6>
+                        <button id="btnAddNote" class="btn btn-sm btn-dark py-0 px-2">+ Nota</button>
+                    </div>
+                    <div id="notesContainer" class="d-flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+        </div>
+        </section>
 
         </div>
     </main>
@@ -196,20 +217,40 @@
         </div>
     </div>
 
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fs-6"><i class="bi bi-exclamation-triangle-fill me-2"></i>Atención</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="errorModalMessage">
+                    Por favor completa todos los campos requeridos correctamente.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="text-center py-4 mt-5 border-top border-secondary text-muted small">
         <p class="mb-1">Diseñado y desarrollado con pasión por <strong>Deisy Vanessa Matallana Bernal</strong></p>
         <p class="mb-2">Psicología & Software Development</p>
-        
+
         <div class="social-links fs-5">
-            <a href="https://github.com/VannessaMatallana" target="_blank" rel="noopener noreferrer" class="social-icon me-3 text-decoration-none" title="GitHub">
+            <a href="https://github.com/VannessaMatallana" target="_blank" rel="noopener noreferrer"
+                class="social-icon me-3 text-decoration-none" title="GitHub">
                 <i class="bi bi-github"></i>
             </a>
-            <a href="https://www.linkedin.com/in/deisy-vanessa-matallana-bernal/" target="_blank" rel="noopener noreferrer" class="social-icon text-decoration-none" title="LinkedIn">
+            <a href="https://www.linkedin.com/in/deisy-vanessa-matallana-bernal/" target="_blank"
+                rel="noopener noreferrer" class="social-icon text-decoration-none" title="LinkedIn">
                 <i class="bi bi-linkedin"></i>
             </a>
         </div>
     </footer>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/taskManager.js"></script>
     <script src="js/index.js"></script>

@@ -4,6 +4,27 @@ taskManager.load();
 document.addEventListener('DOMContentLoaded', () => {
     let filtroEstado = 'todas';
 
+    function actualizarReloj() {
+        const relojElemento = document.getElementById('liveClock');
+        if (!relojElemento) return;
+        
+        const ahora = new Date();
+        const opciones = { 
+            weekday: 'short', 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit' 
+        };
+        
+        relojElemento.textContent = ahora.toLocaleDateString('es-ES', opciones);
+    }
+
+    actualizarReloj();
+    setInterval(actualizarReloj, 1000);
+
     const contenedorTareas = document.getElementById('contenedor-tareas');
     const taskForm = document.getElementById('taskForm');
     const alertError = document.getElementById('alertError');
@@ -66,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (filtroEstado === 'pendientes') cumpleEstado = tarea.completada !== true;
 
             let cumpleBusqueda = (tarea.name || '').toLowerCase().includes(textoBusqueda) || 
-                                   (tarea.description || '').toLowerCase().includes(textoBusqueda);
+                                 (tarea.description || '').toLowerCase().includes(textoBusqueda);
 
             let cumplePrioridad = !prioridadFiltro || prioridadFiltro === 'Todas' || tarea.prioridad === prioridadFiltro;
             let categoriaTarea = tarea.categoria || 'General';
@@ -92,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const hoy = new Date().toISOString().split('T')[0];
 
         tareasFiltradas.forEach((tarea) => {
-            const indexReal = taskManager.tasks.indexOf(tarea);
             const prioridadMostrar = tarea.prioridad || 'Media';
             const categoriaMostrar = tarea.categoria || 'General';
 
@@ -107,6 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 claseBordeCard = 'border-priority-baja';
             }
 
+            const claseCompletadaCard = tarea.completada ? 'border-success bg-opacity-75 opacity-75' : claseBordeCard;
+            const estiloTextoTitulo = tarea.completada ? 'text-decoration-line-through text-muted' : '';
+
             let claseFecha = 'text-secondary';
             let textoVencimiento = `Fecha: ${tarea.dueDate}`;
             if (tarea.dueDate < hoy && !tarea.completada) {
@@ -118,18 +141,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const tarjetaHTML = `
-                <div class="card mb-2 shadow-sm ${claseBordeCard}" data-task-id="${tarea.id}">
+                <div class="card mb-2 shadow-sm ${claseCompletadaCard}" data-task-id="${tarea.id}">
                     <div class="card-body p-3">
                         <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="card-title h6 fw-bold task-title mb-1">${tarea.name}</h5>
+                            <h5 class="card-title h6 fw-bold task-title mb-1 ${estiloTextoTitulo}">${tarea.name}</h5>
                             <span class="badge ${clasePrioridadBadge} small">${prioridadMostrar}</span>
                         </div>
                         <p class="card-text text-muted small mb-1 task-desc">${tarea.description}</p>
                         <p class="card-text ${claseFecha} small mb-2">${textoVencimiento} | Categoría: ${categoriaMostrar}</p>
                         <div class="d-flex justify-content-between align-items-center mt-1">
-                            <div class="form-check m-0">
-                                <input class="form-check-input check-completada" type="checkbox" data-index="${indexReal}" id="check_${indexReal}" ${tarea.completada ? 'checked' : ''}>
-                                <label class="form-check-label small" for="check_${indexReal}">Completada</label>
+                            <div>
+                                <button class="done-button btn btn-sm ${tarea.completada ? 'btn-success' : 'btn-outline-success'} py-0 px-2 me-2">
+                                    <i class="bi bi-check-circle-fill"></i> ${tarea.completada ? 'Completada' : 'Completada'}
+                                </button>
                             </div>
                             <div>
                                 <button class="btn btn-outline-secondary btn-sm me-1 edit-button py-0 px-2"><i class="bi bi-pencil-square"></i> Editar</button>
@@ -152,16 +176,43 @@ document.addEventListener('DOMContentLoaded', () => {
             const prioridad = document.querySelector('input[name="prioridad"]:checked')?.value || 'Alta';
             
             let category = newTaskCategorySelect ? newTaskCategorySelect.value : 'General';
-            if (category === 'Otra') {
-                category = newTaskOtraInput.value.trim() || 'General';
-            }
+            const guardarEnLista = document.getElementById('guardarCategoriaLista')?.checked;
+            const customCategory = newTaskOtraInput ? newTaskOtraInput.value.trim() : '';
 
-            if (!name || !description || !dueDate) {
-                if (alertError) alertError.classList.remove('d-none');
+            if (!name || !description || !dueDate || (category === 'Otra' && !customCategory)) {
+                const errorModalEl = document.getElementById('errorModal');
+                if (errorModalEl) {
+                    const errorMsg = document.getElementById('errorModalMessage');
+                    if (errorMsg) {
+                        errorMsg.textContent = 'Por favor completa todos los campos requeridos y especifica la categoría.';
+                    }
+                    const errorModal = new bootstrap.Modal(errorModalEl);
+                    errorModal.show();
+                }
                 return;
             }
 
-            if (alertError) alertError.classList.add('d-none');
+            if (category === 'Otra') {
+                category = customCategory;
+
+                if (guardarEnLista) {
+                    if (newTaskCategorySelect) {
+                        const optionNueva = document.createElement('option');
+                        optionNueva.value = category;
+                        optionNueva.textContent = category;
+                        newTaskCategorySelect.insertBefore(optionNueva, newTaskCategorySelect.lastElementChild);
+                    }
+
+                    const filtroCat = document.getElementById('filtroCategoria');
+                    if (filtroCat) {
+                        const optionFiltro = document.createElement('option');
+                        optionFiltro.value = category;
+                        optionFiltro.textContent = category;
+                        filtroCat.appendChild(optionFiltro);
+                    }
+                }
+            }
+
             taskManager.addTask(name, description, dueDate, 'PORHACER', category, prioridad);
             taskManager.save();
             renderizarTareas();
@@ -178,6 +229,17 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const taskIdAttr = parentCard.getAttribute('data-task-id');
             const taskId = !isNaN(taskIdAttr) ? Number(taskIdAttr) : taskIdAttr;
+
+            if (e.target.classList.contains('done-button') || e.target.closest('.done-button')) {
+                const task = taskManager.getTaskById(taskId);
+                if (task) {
+                    task.completada = !task.completada;
+                    task.status = task.completada ? 'DONE' : 'PORHACER';
+                    taskManager.save();
+                    renderizarTareas();
+                }
+                return;
+            }
 
             if (e.target.classList.contains('delete-button') || e.target.closest('.delete-button')) {
                 taskManager.deleteTask(taskId);
@@ -287,12 +349,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selectCategoria) selectCategoria.addEventListener('change', renderizarTareas);
     if (inputFecha) inputFecha.addEventListener('input', renderizarTareas);
 
+    // Calendario
     let fechaActualCalendario = new Date();
 
     function renderizarCalendarioCompleto() {
         const containerDays = document.getElementById('calendarDaysContainer');
         const labelMonthYear = document.getElementById('currentMonthYear');
         if (!containerDays || !labelMonthYear) return;
+
+        containerDays.style.display = 'grid';
+        containerDays.style.gridTemplateColumns = 'repeat(7, 1fr)';
+        containerDays.style.gap = '4px';
 
         containerDays.innerHTML = '';
 
@@ -306,8 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalDiasMes = new Date(year, month + 1, 0).getDate();
         const totalDiasMesAnterior = new Date(year, month, 0).getDate();
 
-        const fechasConTareas = taskManager.tasks.map(t => t.dueDate);
-
         let htmlCeldas = '';
 
         for (let i = primerDiaIndex; i > 0; i--) {
@@ -320,7 +385,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const diaStr = String(dia).padStart(2, '0');
             const fechaFormateada = `${year}-${mesStr}-${diaStr}`;
 
-            const tieneTarea = fechasConTareas.includes(fechaFormateada);
+            const tareasDelDia = taskManager.tasks.filter(t => t.dueDate === fechaFormateada);
+            const tieneTarea = tareasDelDia.length > 0;
+            
             const claseIndicador = tieneTarea ? 'bg-dark text-white rounded-circle fw-bold' : 'text-dark';
             const estiloExtra = tieneTarea ? 'width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; margin: auto;' : 'padding: 2px;';
 
@@ -349,14 +416,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!diaCell) return;
         const fechaSeleccionada = diaCell.getAttribute('data-date');
         
+        // Obtenemos las tareas de esa fecha exacta
+        const tareasDelDia = taskManager.tasks.filter(t => t.dueDate === fechaSeleccionada);
+        const pendientesCount = tareasDelDia.filter(t => !t.completada).length;
+        const totalCount = tareasDelDia.length;
+
+        if (totalCount > 0) {
+            mostrarToast(`Fecha ${fechaSeleccionada}: Tienes ${pendientesCount} tareas pendientes (${totalCount} en total).`);
+        } else {
+            mostrarToast(`Fecha ${fechaSeleccionada}: No tienes tareas registradas.`);
+        }
+
         const inputFechaFiltro = document.getElementById('filtroFecha');
         if (inputFechaFiltro) {
             inputFechaFiltro.value = fechaSeleccionada;
             renderizarTareas();
-            mostrarToast(`Filtrando tareas para: ${fechaSeleccionada}`);
         }
     });
 
+    // Notas Rápidas
     const notesContainer = document.getElementById('notesContainer');
     const btnAddNote = document.getElementById('btnAddNote');
 
@@ -405,17 +483,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderNotes();
 
+    // Modo Oscuro
     const btnToggleDark = document.getElementById('btnToggleDark');
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
-        if (btnToggleDark) btnToggleDark.innerHTML = `<i class="bi bi-sun me-1"></i> Modo Claro`;
+        if (btnToggleDark) btnToggleDark.innerHTML = `<i class="bi bi-sun me-1"></i>`;
     }
 
     btnToggleDark?.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        btnToggleDark.innerHTML = isDark ? `<i class="bi bi-sun me-1"></i> Modo Claro` : `<i class="bi bi-moon-stars me-1"></i> Modo Oscuro`;
+        btnToggleDark.innerHTML = isDark ? `<i class="bi bi-sun me-1"></i>` : `<i class="bi bi-moon-stars me-1"></i>`;
     });
 
     renderizarTareas();
