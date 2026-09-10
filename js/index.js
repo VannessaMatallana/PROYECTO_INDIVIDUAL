@@ -3,6 +3,7 @@ taskManager.load();
 
 document.addEventListener('DOMContentLoaded', () => {
     let filtroEstado = 'todas';
+    
 
     function actualizarReloj() {
         const relojElemento = document.getElementById('liveClock');
@@ -37,6 +38,120 @@ document.addEventListener('DOMContentLoaded', () => {
     const newTaskOtraContainer = document.getElementById('newTaskOtraContainer');
     const newTaskOtraInput = document.getElementById('newTaskOtraInput');
 
+    const STORAGE_KEY_CATS = 'categoriasPersonalizadas_app';
+
+    function obtenerCategoriasCustom() {
+        const guardadas = localStorage.getItem(STORAGE_KEY_CATS);
+        return guardadas ? JSON.parse(guardadas) : [];
+    }
+
+    function guardarCategoriaCustom(nuevaCat) {
+        let customCats = obtenerCategoriasCustom();
+        if (!customCats.includes(nuevaCat) && ['Trabajo', 'Personal', 'Estudio', 'General'].indexOf(nuevaCat) === -1) {
+            customCats.push(nuevaCat);
+            localStorage.setItem(STORAGE_KEY_CATS, JSON.stringify(customCats));
+            sincronizarSelectoresCategorias();
+        }
+    }
+
+    function eliminarCategoriaCustom(catAEliminar) {
+        let customCats = obtenerCategoriasCustom();
+        customCats = customCats.filter(c => c !== catAEliminar);
+        localStorage.setItem(STORAGE_KEY_CATS, JSON.stringify(customCats));
+        sincronizarSelectoresCategorias();
+        renderizarAdminCategorias();
+        if (typeof mostrarToast === 'function') {
+            mostrarToast(`Categoría "${catAEliminar}" eliminada.`);
+        }
+    }
+
+    function sincronizarSelectoresCategorias() {
+        const customCats = obtenerCategoriasCustom();
+        
+        if (newTaskCategorySelect) {
+            const valorActual = newTaskCategorySelect.value;
+            
+            newTaskCategorySelect.innerHTML = `
+                <option value="" selected disabled>Selecciona...</option>
+                <option value="Trabajo">Trabajo</option>
+                <option value="Personal">Personal</option>
+                <option value="Estudio">Estudio</option>
+            `;
+
+            customCats.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                newTaskCategorySelect.appendChild(opt);
+            });
+
+            const optOtra = document.createElement('option');
+            optOtra.value = 'Otra';
+            optOtra.textContent = 'Otra...';
+            newTaskCategorySelect.appendChild(optOtra);
+
+            if (valorActual) newTaskCategorySelect.value = valorActual;
+        }
+
+        const selectFiltroCat = document.getElementById('filtroCategoria');
+        if (selectFiltroCat) {
+            const filtroActual = selectFiltroCat.value;
+            selectFiltroCat.innerHTML = `
+                <option selected value="Todas">Todas</option>
+                <option value="Trabajo">Trabajo</option>
+                <option value="Personal">Personal</option>
+                <option value="Estudio">Estudio</option>
+            `;
+            customCats.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                selectFiltroCat.appendChild(opt);
+            });
+            if (filtroActual) selectFiltroCat.value = filtroActual;
+        }
+    }
+
+    function renderizarAdminCategorias() {
+        const listaDiv = document.getElementById('listaCategoriasPersonalizadas');
+        if (!listaDiv) return;
+        
+        const customCats = obtenerCategoriasCustom();
+        if (customCats.length === 0) {
+            listaDiv.innerHTML = '<span class="text-muted small">No hay categorías personalizadas guardadas.</span>';
+            return;
+        }
+
+        listaDiv.innerHTML = '';
+        customCats.forEach(cat => {
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-secondary d-inline-flex align-items-center gap-1 p-2';
+            badge.innerHTML = `
+                ${cat} 
+                <button type="button" class="btn-close btn-close-white btn-sm fs-xs" aria-label="Eliminar" data-cat="${cat}"></button>
+            `;
+            listaDiv.appendChild(badge);
+        });
+    }
+
+    const btnAdminCats = document.getElementById('btnAdministrarCategorias');
+    const containerAdminCats = document.getElementById('containerAdminCategorias');
+    
+    btnAdminCats?.addEventListener('click', () => {
+        containerAdminCats.classList.toggle('d-none');
+        renderizarAdminCategorias();
+    });
+
+    containerAdminCats?.addEventListener('click', (e) => {
+        const closeBtn = e.target.closest('.btn-close');
+        if (closeBtn) {
+            const catToDel = closeBtn.getAttribute('data-cat');
+            eliminarCategoriaCustom(catToDel);
+        }
+    });
+
+    sincronizarSelectoresCategorias();
+
     function mostrarToast(mensaje) {
         const toastEl = document.getElementById('liveToast');
         const toastMessage = document.getElementById('toastMessage');
@@ -70,6 +185,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 newTaskOtraInput.value = '';
             }
         });
+    }
+
+    function calcularEstadoTarea(tarea, hoy) {
+        if (tarea.completada) return 'completada';
+        
+        const fechaHoy = new Date(hoy);
+        const fechaVencimiento = new Date(tarea.dueDate);
+        
+        const diferenciaTiempo = fechaVencimiento - fechaHoy;
+        const diferenciaDias = Math.round(diferenciaTiempo / (1000 * 60 * 60 * 24));
+
+        if (diferenciaDias < 0) {
+            return 'vencida';
+        } else if (diferenciaDias >= 0 && diferenciaDias <= 2) {
+            return 'proxima';
+        } else {
+            return 'pendiente';
+        }
     }
 
     function renderizarTareas() {
@@ -127,32 +260,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 claseBordeCard = 'border-priority-baja';
             }
 
-            const claseCompletadaCard = tarea.completada ? 'border-success bg-opacity-75 opacity-75' : claseBordeCard;
-            const estiloTextoTitulo = tarea.completada ? 'text-decoration-line-through text-muted' : '';
+            const estadoLogico = calcularEstadoTarea(tarea, hoy);
 
             let claseFecha = 'text-secondary';
             let textoVencimiento = `Fecha: ${tarea.dueDate}`;
-            if (tarea.dueDate < hoy && !tarea.completada) {
+            let badgeEstadoHTML = '';
+
+            if (estadoLogico === 'completada') {
+                textoVencimiento += ` <i class="bi bi-check-circle-fill text-success"></i> Completada`;
+                badgeEstadoHTML = `<span class="badge bg-success small ms-1">Completada</span>`;
+            } else if (estadoLogico === 'vencida') {
                 claseFecha = 'text-danger fw-bold';
                 textoVencimiento += ` <i class="bi bi-exclamation-triangle-fill"></i> Vencida`;
-            } else if (tarea.dueDate === hoy && !tarea.completada) {
+                badgeEstadoHTML = `<span class="badge bg-danger small ms-1">Vencida</span>`;
+            } else if (estadoLogico === 'proxima') {
                 claseFecha = 'text-warning fw-bold';
-                textoVencimiento += ` <i class="bi bi-clock-fill"></i> Vence hoy`;
+                textoVencimiento += ` <i class="bi bi-clock-fill"></i> Próxima a vencer`;
+                badgeEstadoHTML = `<span class="badge bg-warning text-dark small ms-1">Próxima</span>`;
+            } else {
+                badgeEstadoHTML = `<span class="badge bg-secondary small ms-1">Pendiente</span>`;
             }
+
+            const claseCompletadaCard = tarea.completada ? 'border-success bg-opacity-75 opacity-75' : claseBordeCard;
+            const estiloTextoTitulo = tarea.completada ? 'text-decoration-line-through text-muted' : '';
+
+            const claseCategoriaBadge = 'badge-categoria';
 
             const tarjetaHTML = `
                 <div class="card mb-2 shadow-sm ${claseCompletadaCard}" data-task-id="${tarea.id}">
                     <div class="card-body p-3">
                         <div class="d-flex justify-content-between align-items-start">
                             <h5 class="card-title h6 fw-bold task-title mb-1 ${estiloTextoTitulo}">${tarea.name}</h5>
-                            <span class="badge ${clasePrioridadBadge} small">${prioridadMostrar}</span>
+                            <div>
+                                <span class="badge ${clasePrioridadBadge} small">${prioridadMostrar}</span>
+                                <span class="badge ${claseCategoriaBadge} small ms-1">${categoriaMostrar}</span>
+                                ${badgeEstadoHTML}
+                            </div>
                         </div>
                         <p class="card-text text-muted small mb-1 task-desc">${tarea.description}</p>
-                        <p class="card-text ${claseFecha} small mb-2">${textoVencimiento} | Categoría: ${categoriaMostrar}</p>
+                        <p class="card-text ${claseFecha} small mb-2">${textoVencimiento}</p>
                         <div class="d-flex justify-content-between align-items-center mt-1">
                             <div>
                                 <button class="done-button btn btn-sm ${tarea.completada ? 'btn-success' : 'btn-outline-success'} py-0 px-2 me-2">
-                                    <i class="bi bi-check-circle-fill"></i> ${tarea.completada ? 'Completada' : 'Completada'}
+                                    <i class="bi bi-check-circle-fill"></i> ${tarea.completada ? 'Completada' : 'Completar'}
                                 </button>
                             </div>
                             <div>
@@ -196,20 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 category = customCategory;
 
                 if (guardarEnLista) {
-                    if (newTaskCategorySelect) {
-                        const optionNueva = document.createElement('option');
-                        optionNueva.value = category;
-                        optionNueva.textContent = category;
-                        newTaskCategorySelect.insertBefore(optionNueva, newTaskCategorySelect.lastElementChild);
-                    }
-
-                    const filtroCat = document.getElementById('filtroCategoria');
-                    if (filtroCat) {
-                        const optionFiltro = document.createElement('option');
-                        optionFiltro.value = category;
-                        optionFiltro.textContent = category;
-                        filtroCat.appendChild(optionFiltro);
-                    }
+                    guardarCategoriaCustom(category);
                 }
             }
 
@@ -416,7 +553,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!diaCell) return;
         const fechaSeleccionada = diaCell.getAttribute('data-date');
         
-        // Obtenemos las tareas de esa fecha exacta
         const tareasDelDia = taskManager.tasks.filter(t => t.dueDate === fechaSeleccionada);
         const pendientesCount = tareasDelDia.filter(t => !t.completada).length;
         const totalCount = tareasDelDia.length;

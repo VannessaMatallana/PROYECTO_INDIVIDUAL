@@ -13,7 +13,8 @@ class TaskManager {
             dueDate: dueDate,
             status: status,
             categoria: category,
-            prioridad: prioridad
+            prioridad: prioridad,
+            completada: false 
         };
         this.tasks.push(nuevaTarea);
     }
@@ -38,6 +39,13 @@ class TaskManager {
         return foundTask;
     }
 
+    updateTask(taskId, updatedData) {
+        const task = this.getTaskById(taskId);
+        if (task) {
+            Object.assign(task, updatedData);
+        }
+    }
+
     save() {
         const tasksJson = JSON.stringify(this.tasks);
         localStorage.setItem('tasks', tasksJson);
@@ -55,4 +63,3 @@ class TaskManager {
         }
     }
 }
-

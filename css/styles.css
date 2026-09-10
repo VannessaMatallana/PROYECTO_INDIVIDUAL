@@ -30,7 +30,6 @@ body.dark-mode {
     --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-/* Fondo para el Modo Claro */
 body {
     background: url('https://images.unsplash.com/photo-1616001089004-04948fc0e6c1?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed;
     background-size: cover;
@@ -40,7 +39,6 @@ body {
     transition: background 0.3s ease;
 }
 
-/* Fondo para el Modo Oscuro (con capa semitransparente para mejor legibilidad) */
 body.dark-mode {
     background: linear-gradient(rgba(18, 3, 19, 0.75), rgba(18, 3, 19, 0.75)), 
                 url('https://images.unsplash.com/photo-1652654223242-102cfbcdc6f5?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed !important;
@@ -600,4 +598,99 @@ body.dark-mode .social-icon {
 
 body.dark-mode .social-icon:hover {
     color: #d291e6 !important; 
+}
+
+#calendarDropdown {
+    background-color: #2A6374;
+    border: 1.5px solid #2A6374;
+    color: #ffffff !important;
+    font-weight: 600;
+    transition: all 0.25s ease-in-out;
+}
+
+#calendarDropdown:hover, 
+#calendarDropdown:focus, 
+#calendarDropdown.show {
+    background-color: #0D204A !important;
+    border-color: #0D204A !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(42, 99, 116, 0.4);
+}
+
+body.dark-mode #calendarDropdown {
+    background-color: #6E117C;
+    border: 1.5px solid #6E117C;
+    color: #ffffff !important;
+}
+
+body.dark-mode #calendarDropdown:hover, 
+body.dark-mode #calendarDropdown:focus, 
+body.dark-mode #calendarDropdown.show {
+    background-color: #d291e6 !important;
+    border-color: #d291e6 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 12px rgba(110, 17, 124, 0.6);
+}
+
+.dropdown-menu {
+    background-color: #ffffff;
+    border: 1px solid rgba(42, 99, 116, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(13, 32, 74, 0.12);
+    padding: 1rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+body.dark-mode .dropdown-menu {
+    background-color: #182238 !important;
+    border: 1px solid rgba(210, 145, 230, 0.3) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    color: #f8f9fa !important;
+}
+
+/* Corrección de los días del calendario en modo oscuro */
+body.dark-mode .calendar-day {
+    background-color: rgba(45, 35, 60, 0.6) !important;
+    border: 1px solid rgba(210, 145, 230, 0.25) !important;
+    color: #f3e8ff !important;
+}
+
+body.dark-mode .calendar-day:hover {
+    background-color: rgba(110, 17, 124, 0.4) !important;
+    border-color: #d291e6 !important;
+}
+
+body.dark-mode .calendar-day span {
+    color: #f3e8ff !important;
+}
+
+body.dark-mode .calendar-day.text-muted,
+body.dark-mode .calendar-day span.text-muted {
+    color: rgba(243, 232, 255, 0.4) !important;
+}
+
+body.dark-mode .calendar-day.today {
+    border: 2px solid #d291e6 !important;
+    font-weight: bold;
+}
+
+body.dark-mode .card .text-muted {
+    color: #adb5bd !important;
+}
+
+body.dark-mode .card {
+    background-color: #212529;
+    color: #f8f9fa;
+    border-color: #343a40;
+}
+
+.badge-categoria {
+    background-color: rgba(33, 37, 41, 0.1);
+    color: #212529;
+    font-weight: 500;
+}
+
+body.dark-mode .badge-categoria {
+    background-color: rgba(248, 249, 250, 0.85);
+    color: #212529;
 }
