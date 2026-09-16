@@ -1,10 +1,87 @@
+// ==========================================
+// 1. INICIALIZACIÓN GENERAL
+// ==========================================
 const taskManager = new TaskManager();
 taskManager.load();
 
 document.addEventListener('DOMContentLoaded', () => {
     let filtroEstado = 'todas';
-    
 
+
+    // ==========================================
+    // 2. MODAL DE BIENVENIDA Y TAREAS PENDIENTES
+    // ==========================================
+    function verificarTareasPendientesAlEntrar() {
+        const pendientes = taskManager.tasks.filter(t => !t.completada);
+        const cantidad = pendientes.length;
+
+        const spanNumero = document.getElementById('numeroPendientesModal');
+        const subtexto = document.getElementById('subtextoPendientes');
+        const mensajeEl = document.getElementById('mensajeBienvenida');
+        const iconoEl = document.getElementById('iconoBienvenida');
+        const modalElement = document.getElementById('modalBienvenida');
+
+        if (spanNumero && modalElement && typeof bootstrap !== 'undefined') {
+            spanNumero.textContent = cantidad;
+            subtexto.textContent = cantidad === 1 ? 'tarea pendiente' : 'tareas pendientes';
+
+            if (cantidad === 0) {
+                iconoEl.innerHTML = '<i class="bi bi-stars"></i>';
+                mensajeEl.textContent = '¡Qué paz! No tienes ninguna tarea pendiente. Disfruta tu día o aprovecha para consentirte un rato.';
+            } else if (cantidad <= 3) {
+                iconoEl.innerHTML = '<i class="bi bi-cup-hot"></i>';
+                mensajeEl.textContent = 'Tienes poquitas cosas pendientes por hacer. ¡Estás a un paso de tener todo al día!';
+            } else if (cantidad <= 7) {
+                iconoEl.innerHTML = '<i class="bi bi-flower1"></i>';
+                mensajeEl.textContent = 'Un pasito a la vez. Ve con calma, organízate y verás que avanzas muchísimo hoy.';
+            } else {
+                iconoEl.innerHTML = '<i class="bi bi-compass"></i>';
+                mensajeEl.textContent = 'Se ve que tienes bastantes cositas en mente. Respira hondo, prioriza lo más importante y ¡tú puedes con esto!';
+            }
+
+            const modalBootstrap = new bootstrap.Modal(modalElement);
+            modalBootstrap.show();
+        }
+    }
+
+    verificarTareasPendientesAlEntrar();
+
+    function manejarClicDiaCalendario(fechaStr) {
+        const tareasDelDia = taskManager.tasks.filter(tarea => tarea.dueDate === fechaStr);
+        const spanFecha = document.getElementById('fechaSeleccionadaModal');
+        const listaModal = document.getElementById('listaTareasModal');
+
+        if (!spanFecha || !listaModal) return;
+        spanFecha.textContent = fechaStr;
+        listaModal.innerHTML = '';
+        if (tareasDelDia.length === 0) {
+            listaModal.innerHTML = `<li class="list-group-item text-muted text-center">No hay tareas pendientes para esta fecha.</li>`;
+        } else {
+            tareasDelDia.forEach(tarea => {
+                const item = document.createElement('li');
+                item.className = `list-group-item d-flex justify-content-between align-items-center ${tarea.completada ? 'list-group-item-success' : ''}`;
+                item.innerHTML = `
+                <span><strong>${tarea.name}</strong> - ${tarea.description || 'Sin descripción'}</span>
+                <span class="badge bg-${tarea.completada ? 'success' : 'warning'} rounded-pill">
+                ${tarea.completada ? 'Completada' : 'Pendiente'}
+                </span>
+                `;
+                listaModal.appendChild(item);
+            });
+        }
+
+        const modalElement = document.getElementById('modalTareasDia');
+
+        if (modalElement && typeof bootstrap !== 'undefined') {
+            const modalBootstrap = new bootstrap.Modal(modalElement);
+            modalBootstrap.show();
+        }
+    }
+
+
+    // ==========================================
+    // 3. RELOJ EN VIVO
+    // ==========================================
     function actualizarReloj() {
         const relojElemento = document.getElementById('liveClock');
         if (!relojElemento) return;
@@ -26,6 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
     actualizarReloj();
     setInterval(actualizarReloj, 1000);
 
+
+    // ==========================================
+    // 4. SELECTORES Y ELEMENTOS DEL DOM (GLOBALES)
+    // ==========================================
     const contenedorTareas = document.getElementById('contenedor-tareas');
     const taskForm = document.getElementById('taskForm');
     const alertError = document.getElementById('alertError');
@@ -38,6 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const newTaskOtraContainer = document.getElementById('newTaskOtraContainer');
     const newTaskOtraInput = document.getElementById('newTaskOtraInput');
 
+
+    // ==========================================
+    // 5. GESTIÓN DE CATEGORÍAS PERSONALIZADAS
+    // ==========================================
     const STORAGE_KEY_CATS = 'categoriasPersonalizadas_app';
 
     function obtenerCategoriasCustom() {
@@ -152,6 +237,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     sincronizarSelectoresCategorias();
 
+
+    // ==========================================
+    // 6. UTILIDADES (TOASTS Y CONTADORES)
+    // ==========================================
     function mostrarToast(mensaje) {
         const toastEl = document.getElementById('liveToast');
         const toastMessage = document.getElementById('toastMessage');
@@ -187,6 +276,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+
+    // ==========================================
+    // 7. LÓGICA Y RENDERIZADO DE TAREAS
+    // ==========================================
     function calcularEstadoTarea(tarea, hoy) {
         if (tarea.completada) return 'completada';
         
@@ -283,8 +376,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const claseCompletadaCard = tarea.completada ? 'border-success bg-opacity-75 opacity-75' : claseBordeCard;
             const estiloTextoTitulo = tarea.completada ? 'text-decoration-line-through text-muted' : '';
-
             const claseCategoriaBadge = 'badge-categoria';
+
+            let subtasksHtml = `<div class="mt-2 pt-2 border-top">
+                <small class="fw-bold text-muted">Subtareas:</small>
+                <ul class="list-unstyled ms-2 mb-2">`;
+            
+            if (tarea.subtasks && tarea.subtasks.length > 0) {
+                tarea.subtasks.forEach((sub, index) => {
+                    subtasksHtml += `
+                        <li>
+                            <input type="checkbox" class="form-check-input me-1 check-subtask" data-task-id="${tarea.id}" data-sub-index="${index}" ${sub.completed ? 'checked' : ''}>
+                            <span class="${sub.completed ? 'text-decoration-line-through text-muted' : ''}">${sub.text}</span>
+                        </li>`;
+                });
+            } else {
+                subtasksHtml += `<li class="text-muted small fst-italic">No hay subtareas aún.</li>`;
+            }
+
+            subtasksHtml += `</ul>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control form-control-sm input-nueva-subtarea" placeholder="Añadir subtarea..." data-task-id="${tarea.id}">
+                    <button class="btn btn-outline-secondary btn-sm btn-add-subtask" data-task-id="${tarea.id}" type="button">+</button>
+                </div>
+            </div>`;
 
             const tarjetaHTML = `
                 <div class="card mb-2 shadow-sm ${claseCompletadaCard}" data-task-id="${tarea.id}">
@@ -299,7 +414,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <p class="card-text text-muted small mb-1 task-desc">${tarea.description}</p>
                         <p class="card-text ${claseFecha} small mb-2">${textoVencimiento}</p>
-                        <div class="d-flex justify-content-between align-items-center mt-1">
+                        ${subtasksHtml}
+                        <div class="d-flex justify-content-between align-items-center mt-2">
                             <div>
                                 <button class="done-button btn btn-sm ${tarea.completada ? 'btn-success' : 'btn-outline-success'} py-0 px-2 me-2">
                                     <i class="bi bi-check-circle-fill"></i> ${tarea.completada ? 'Completada' : 'Completar'}
@@ -366,6 +482,26 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const taskIdAttr = parentCard.getAttribute('data-task-id');
             const taskId = !isNaN(taskIdAttr) ? Number(taskIdAttr) : taskIdAttr;
+
+            if (e.target.classList.contains('check-subtask')) {
+                const subIndex = parseInt(e.target.getAttribute('data-sub-index'));
+                const task = taskManager.getTaskById(taskId);
+                if (task && task.subtasks && task.subtasks[subIndex]) {
+                    task.subtasks[subIndex].completed = e.target.checked;
+                    taskManager.save();
+                    renderizarTareas();
+                }
+                return;
+            }
+
+            if (e.target.classList.contains('btn-add-subtask') || e.target.closest('.btn-add-subtask')) {
+                const inputSub = parentCard.querySelector('.input-nueva-subtarea');
+                if (inputSub && inputSub.value.trim() !== '') {
+                    taskManager.addSubtask(taskId, inputSub.value.trim());
+                    renderizarTareas();
+                }
+                return;
+            }
 
             if (e.target.classList.contains('done-button') || e.target.closest('.done-button')) {
                 const task = taskManager.getTaskById(taskId);
@@ -445,6 +581,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+
+    // ==========================================
+    // 8. IMPORTAR Y EXPORTAR TAREAS (JSON)
+    // ==========================================
     document.getElementById('btnExportar')?.addEventListener('click', () => {
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(taskManager.tasks, null, 2));
         const downloadAnchor = document.createElement('a');
@@ -486,7 +626,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selectCategoria) selectCategoria.addEventListener('change', renderizarTareas);
     if (inputFecha) inputFecha.addEventListener('input', renderizarTareas);
 
-    // Calendario
+
+    // ==========================================
+    // 9. CALENDARIO INTERACTIVO
+    // ==========================================
     let fechaActualCalendario = new Date();
 
     function renderizarCalendarioCompleto() {
@@ -570,7 +713,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Notas Rápidas
+
+    // ==========================================
+    // 10. NOTAS RÁPIDAS (POST-ITS)
+    // ==========================================
     const notesContainer = document.getElementById('notesContainer');
     const btnAddNote = document.getElementById('btnAddNote');
 
@@ -619,7 +765,147 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderNotes();
 
-    // Modo Oscuro
+
+    // ==========================================
+    // 11. ESPACIO DE BIENESTAR Y ESTADO DE ÁNIMO
+    // ==========================================
+    const frases = [
+        "Un paso a la vez también es avanzar.",
+        "No tienes que hacerlo todo hoy, prioriza tu paz.",
+        "El descanso también forma parte del progreso.",
+        "Cree en la constante evolución de tu camino.",
+        "Tu ritmo es el correcto, no te compares.",
+        "Aprender toma tiempo; sé amable con tu proceso."
+    ];
+
+    const fraseEl = document.getElementById('fraseMotivacional');
+    const btnNuevaFrase = document.getElementById('btnNuevaFrase');
+
+    function cambiarFrase() {
+        if (!fraseEl) return;
+        const aleatoria = frases[Math.floor(Math.random() * frases.length)];
+        fraseEl.textContent = `"${aleatoria}"`;
+    }
+
+    btnNuevaFrase?.addEventListener('click', cambiarFrase);
+
+    const textoAnimoSeleccionado = document.getElementById('textoAnimoSeleccionado');
+    const mensajeAnimoEl = document.getElementById('mensajeAnimo');
+    const itemsAnimo = document.querySelectorAll('.item-animo');
+
+    const mensajesPorAnimo = {
+        'Genial': '¡Aprovecha esa energía para comerte el mundo hoy!',
+        'Tranquila': 'Un estado mental sereno es el mejor aliado de la productividad.',
+        'Enfocada': '¡Genial! Mantén la concentración y celebra tus logros paso a paso.',
+        'Cansada': 'Recuerda tomar pausas activas e hidratarte. No te exijas de más.',
+        'Abrumada': 'Respira hondo. Divide las tareas grandes en pequeñas subtareas y ve despacio.'
+    };
+
+    const hoyStr = new Date().toISOString().split('T')[0];
+    const registroGuardado = JSON.parse(localStorage.getItem('registro_animo_diario'));
+
+    if (registroGuardado && registroGuardado.fecha === hoyStr && textoAnimoSeleccionado) {
+        const itemEncontrado = document.querySelector(`.item-animo[data-animo="${registroGuardado.animo}"]`);
+        if (itemEncontrado) {
+            textoAnimoSeleccionado.innerHTML = itemEncontrado.innerHTML;
+            if (mensajesPorAnimo[registroGuardado.animo]) {
+                mensajeAnimoEl.textContent = mensajesPorAnimo[registroGuardado.animo];
+            }
+        }
+    }
+
+    itemsAnimo.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const animoSeleccionado = item.getAttribute('data-animo');
+            
+            if (textoAnimoSeleccionado) {
+                textoAnimoSeleccionado.innerHTML = item.innerHTML;
+            }
+
+            guardarRegistroAnimo(animoSeleccionado, item.innerHTML.trim());
+            
+            if (mensajeAnimoEl && mensajesPorAnimo[animoSeleccionado]) {
+                mensajeAnimoEl.textContent = mensajesPorAnimo[animoSeleccionado];
+            }
+
+            if (typeof mostrarToast === 'function') {
+                mostrarToast(`Estado de ánimo registrado: ${animoSeleccionado}`);
+            }
+        });
+    });
+
+
+    // ==========================================
+    // 12. HISTORIAL DE ESTADO DE ÁNIMO
+    // ==========================================
+    function guardarRegistroAnimo(animoSeleccionado, htmlIcono) {
+        let historial = JSON.parse(localStorage.getItem('historial_animo_general')) || [];
+        const fechaHoraActual = new Date().toISOString(); 
+        const fechaFormateada = new Date().toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
+
+        const hoyStr = new Date().toISOString().split('T')[0];
+        historial = historial.filter(item => !item.fechaISO.startsWith(hoyStr));
+
+        historial.unshift({
+            fechaISO: fechaHoraActual,
+            fechaVisual: fechaFormateada,
+            animo: animoSeleccionado,
+            iconoHtml: htmlIcono
+        });
+
+        if (historial.length > 30) historial.pop();
+
+        localStorage.setItem('historial_animo_general', JSON.stringify(historial));
+        renderizarHistorialAnimo();
+    }
+
+    function renderizarHistorialAnimo() {
+        const listaHistorial = document.getElementById('listaHistorialAnimo');
+        if (!listaHistorial) return;
+
+        let historial = JSON.parse(localStorage.getItem('historial_animo_general')) || [];
+        listaHistorial.innerHTML = '';
+
+        if (historial.length === 0) {
+            listaHistorial.innerHTML = `<div class="text-center text-muted py-3">Aún no hay registros guardados.</div>`;
+            return;
+        }
+
+        historial.forEach(reg => {
+            const item = document.createElement('div');
+            item.className = 'list-group-item d-flex justify-content-between align-items-center px-0 py-2';
+            item.innerHTML = `
+                <div>
+                    <span class="d-flex align-items-center gap-2 fw-bold text-dark">
+                        ${reg.iconoHtml || ''} ${reg.animo}
+                    </span>
+                    <small class="text-muted" style="font-size: 0.7rem;">${reg.fechaVisual}</small>
+                </div>
+            `;
+            listaHistorial.appendChild(item);
+        });
+    }
+
+    renderizarHistorialAnimo();
+    
+    let historial = JSON.parse(localStorage.getItem('historial_animo_general')) || [];
+    const regHoy = historial.find(item => item.fechaISO.startsWith(hoyStr));
+    
+    if (regHoy && textoAnimoSeleccionado) {
+        const itemEncontrado = document.querySelector(`.item-animo[data-animo="${regHoy.animo}"]`);
+        if (itemEncontrado) {
+            textoAnimoSeleccionado.innerHTML = itemEncontrado.innerHTML;
+            if (mensajeAnimoEl && mensajesPorAnimo[regHoy.animo]) {
+                mensajeAnimoEl.textContent = mensajesPorAnimo[regHoy.animo];
+            }
+        }
+    }
+
+
+    // ==========================================
+    // 13. MODO OSCURO (DARK MODE)
+    // ==========================================
     const btnToggleDark = document.getElementById('btnToggleDark');
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');
@@ -633,5 +919,9 @@ document.addEventListener('DOMContentLoaded', () => {
         btnToggleDark.innerHTML = isDark ? `<i class="bi bi-sun me-1"></i>` : `<i class="bi bi-moon-stars me-1"></i>`;
     });
 
+
+    // ==========================================
+    // 14. RENDERIZADO INICIAL DE TAREAS
+    // ==========================================
     renderizarTareas();
 });

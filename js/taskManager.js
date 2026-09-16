@@ -14,9 +14,30 @@ class TaskManager {
             status: status,
             categoria: category,
             prioridad: prioridad,
-            completada: false 
+            completada: false,
+            subtasks: []
         };
         this.tasks.push(nuevaTarea);
+    }
+
+    addSubtask(taskId, subtaskText) {
+        const task = this.getTaskById(taskId);
+        if (task) {
+            if (!task.subtasks) task.subtasks = [];
+            task.subtasks.push({
+                text: subtaskText,
+                completed: false
+            });
+            this.save();
+        }
+    }
+
+    toggleSubtask(taskId, subtaskIndex) {
+        const task = this.getTaskById(taskId);
+        if (task && task.subtasks && task.subtasks[subtaskIndex]) {
+            task.subtasks[subtaskIndex].completed = !task.subtasks[subtaskIndex].completed;
+            this.save();
+        }
     }
 
     deleteTask(taskId) {

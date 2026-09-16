@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Quicksand:wght@500;700&display=swap');
 
+/* ==========================================================================
+   1. VARIABLES Y CONFIGURACIÓN DE PALETA DE COLORES
+   ========================================================================== */
 :root {
     --primary-purple: #4a154b;
     --light-purple: #d1d2d9;
@@ -30,6 +33,9 @@ body.dark-mode {
     --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
+/* ==========================================================================
+   2. ESTILOS GENERALES Y FONDO DE BODY (Modo Claro y Oscuro)
+   ========================================================================== */
 body {
     background: url('https://images.unsplash.com/photo-1616001089004-04948fc0e6c1?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed;
     background-size: cover;
@@ -46,24 +52,92 @@ body.dark-mode {
     color: #e0e0e0;
 }
 
+/* ==========================================================================
+   3. HEADER Y FOOTER
+   ========================================================================== */
 header {
     background: linear-gradient(135deg, #120313, var(--primary-purple)) !important;
     border-bottom: 4px solid var(--accent-coral);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
+.navbar, footer {
+    background-color: #0D204A !important;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+footer, footer p, footer a, .navbar .navbar-brand {
+    color: #ffffff !important;
+}
+
+footer {
+    padding: 1.5rem 0;
+    margin-top: auto;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .navbar, 
+body.dark-mode footer {
+    background-color: #121824 !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-mode footer, 
+body.dark-mode footer p, 
+body.dark-mode footer a,
+body.dark-mode .navbar .navbar-brand {
+    color: #f3f4f6 !important;
+}
+
+.social-icon {
+    color: #6c757d;
+    transition: color 0.2s ease;
+}
+
+.social-icon:hover {
+    color: #333333; 
+}
+
+body.dark-mode .social-icon {
+    color: #ffffff !important;
+}
+
+body.dark-mode .social-icon:hover {
+    color: #d291e6 !important; 
+}
+
+/* ==========================================================================
+   4. TARJETAS (CARDS) Y EFECTOS HOVER
+   ========================================================================== */
 .card {
-    background-color: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 16px;
-    box-shadow: var(--card-shadow);
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+    background: linear-gradient(145deg, #ffffff 0%, #f4f6f9 100%) !important;
+    border: 1px solid rgba(42, 99, 116, 0.2);
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(13, 32, 74, 0.07);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-color, #212529);
 }
 
 .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px var(--card-shadow);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(13, 32, 74, 0.12);
+    border-color: rgba(42, 99, 116, 0.4);
+}
+
+body.dark-mode .card {
+    background: linear-gradient(145deg, #182238 0%, #101624 100%) !important;
+    border: 1px solid rgba(210, 145, 230, 0.2) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    color: #ffffff !important;
+}
+
+body.dark-mode .card:hover {
+    border-color: rgba(210, 145, 230, 0.4) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+}
+
+body.dark-mode .card .text-muted {
+    color: #adb5bd !important;
 }
 
 .bg-secondary-subtle {
@@ -71,6 +145,9 @@ header {
     border: 2px solid var(--card-border-color);
 }
 
+/* ==========================================================================
+   5. BOTONES Y GRUPOS DE BOTONES
+   ========================================================================== */
 .btn-dark {
     background-color: var(--primary-purple);
     border-color: var(--primary-purple);
@@ -85,40 +162,51 @@ header {
     transform: translateY(-1px);
 }
 
-.badge-priority-alta {
-    background-color: rgba(255, 107, 107, 0.2);
-    color: var(--accent-coral);
-    font-weight: 700;
-    padding: 0.35em 0.8em;
-    border-radius: 50rem;
-    font-size: 0.75rem;
-    border: 1px solid rgba(255, 107, 107, 0.4);
+#btnToggleDark {
+    background-color: #2A6374;
+    border: 1.5px solid #2A6374;
+    color: #ffffff !important;
+    font-weight: 600;
+    transition: all 0.25s ease-in-out;
 }
 
-.badge-priority-media {
-    background-color: rgba(123, 44, 191, 0.2);
-    color: var(--accent-purple);
-    font-weight: 700;
-    padding: 0.35em 0.8em;
-    border-radius: 50rem;
-    font-size: 0.75rem;
-    border: 1px solid rgba(123, 44, 191, 0.4);
+#btnToggleDark:hover {
+    background-color: #0D204A;
+    border-color: #0D204A;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(42, 99, 116, 0.4);
 }
 
-.badge-priority-baja {
-    background-color: rgba(42, 183, 202, 0.2);
-    color: var(--accent-blue);
-    font-weight: 700;
-    padding: 0.35em 0.8em;
-    border-radius: 50rem;
-    font-size: 0.75rem;
-    border: 1px solid rgba(42, 183, 202, 0.4);
+body.dark-mode #btnToggleDark {
+    background-color: #6E117C;
+    border: 1.5px solid #6E117C;
+    color: #ffffff !important;
 }
 
-.border-priority-alta { border-left: 6px solid var(--accent-coral) !important; }
-.border-priority-media { border-left: 6px solid var(--accent-purple) !important; }
-.border-priority-baja { border-left: 6px solid var(--accent-blue) !important; }
+body.dark-mode #btnToggleDark:hover {
+    background-color: #d291e6;
+    border-color: #d291e6;
+    color: #ffffff !important;
+    box-shadow: 0 0 12px rgba(110, 17, 124, 0.6);
+}
 
+.btn-group .btn.active, .btn-group .btn:active {
+    background-color: #2A6374 !important;
+    color: #ffffff !important;
+    border-color: #2A6374 !important;
+    font-weight: 600;
+    box-shadow: 0 0 8px rgba(42, 99, 116, 0.4);
+}
+
+body.dark-mode .btn-group .btn.active {
+    background-color: #6E117C !important; 
+    border-color: #6E117C !important;
+    color: #ffffff !important;
+}
+
+/* ==========================================================================
+   6. FORMULARIOS (Inputs, Selects, Focus)
+   ========================================================================== */
 .form-control, .form-select {
     background-color: var(--card-bg);
     color: var(--text-color);
@@ -133,63 +221,6 @@ header {
     color: var(--text-color);
     border-color: var(--accent-purple);
     box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.2);
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.fade-in {
-    animation: fadeIn 0.3s ease-in-out forwards;
-}
-
-.toast-container {
-    z-index: 1056;
-}
-
-.post-it {
-    background-color: rgba(245, 230, 211, 0.9);
-    padding: 10px;
-    border-radius: 6px;
-    width: 47%;
-    min-height: 80px;
-    box-shadow: 2px 4px 10px rgba(0,0,0,0.15);
-    font-size: 0.85rem;
-    position: relative;
-    transition: transform 0.2s ease;
-}
-.post-it:nth-child(odd) { transform: rotate(-1.5deg); background-color: #d291e6; }
-.post-it:nth-child(even) { transform: rotate(1.5deg); background-color: #78e196; }
-.post-it:hover { transform: scale(1.03) rotate(0deg); z-index: 2; }
-
-.note-text:focus {
-    outline: none;
-}
-
-.calendar-day:hover span {
-    background-color: rgba(123, 44, 191, 0.15);
-    border-radius: 50%;
-}
-
-.calendar-day span.bg-dark:hover {
-    background-color: var(--accent-purple) !important;
-}
-
-body.dark-mode .calendar-day span.bg-dark {
-    background-color: #c77dff !important;
-    color: #120313 !important;
-}
-
-body.dark-mode .card {
-    background-color: rgba(25, 20, 35, 0.95) !important;
-    border: 1px solid rgba(168, 85, 247, 0.3) !important;
-    color: var(--text-color) !important;
-}
-
-body.dark-mode .navbar {
-    background-color: #0b0910 !important;
-    border-bottom: 1px solid rgba(168, 85, 247, 0.2);
 }
 
 body.dark-mode .form-control,
@@ -213,137 +244,13 @@ body.dark-mode small {
     color: #d8b4fe !important;
 }
 
-body.dark-mode .post-it {
-    background-color: rgba(60, 45, 75, 0.9);
-    color: #f3e8ff;
-    border: 1px solid rgba(168, 85, 247, 0.3);
-}
-
-body.dark-mode .post-it:nth-child(odd) { background-color: #d291e6; color: #f8f6f0; }
-body.dark-mode .post-it:nth-child(even) { background-color: #78e196; color: #f8f6f0; }
-
-.card {
-    background-color: var(--card-bg, #ffffff);
-    color: var(--text-color, #212529);
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.border-priority-alta {
-    border-left: 4px solid #dc3545 !important;
-}
-
-.border-priority-media {
-    border-left: 4px solid #b19cd9 !important;
-}
-
-.border-priority-baja {
-    border-left: 4px solid #6c757d !important; 
-}
-
-body.dark-mode .card {
-    background-color: #1e1e2f; 
-    color: #f8f9fa;
-    border-color: #2b2b40;
-}
-
-body.dark-mode .card .text-muted {
-    color: #a0a0ab !important;
-}
-
-.calendar-day span {
-    color: inherit;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-body.dark-mode .calendar-day {
-    color: #e4e4e7;
-}
-
-body.dark-mode .calendar-day span.text-dark {
-    color: #f4f4f5 !important;
-}
-
-.calendar-day:hover span {
-    background-color: rgba(177, 156, 217, 0.2);
-    border-radius: 50%;
-}
-
-#calendarDaysContainer {
-    display: grid !important;
-    grid-template-columns: repeat(7, 1fr) !important;
-    gap: 4px !important;
-}
-
-.calendar-day {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.calendar-day {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.calendar-day:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
-.calendar-day.today {
-    font-weight: bold;
-    border: 1px solid var(--bs-dark);
-}
-
-.calendar-day.has-task {
-    background-color: rgba(42, 183, 202, 0.15);
-    color: var(--accent-blue);
-}
-
-#calendarDaysContainer {
-    display: grid !important;
-    grid-template-columns: repeat(7, 1fr) !important;
-    gap: 6px !important;
-}
-
-.calendar-day {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    background-color: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 0.375rem; 
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.calendar-day:hover {
-    border-color: #adb5bd;
-    background-color: #f8f9fa;
-}
-
-.calendar-day.today {
-    border: 2px solid #198754;
-    font-weight: bold;
-}
-
+/* ==========================================================================
+   7. PRIORIDADES (Badges y Bordes)
+   ========================================================================== */
 .badge-priority-alta, .border-priority-alta {
     background-color: rgba(163, 1, 48, 0.15) !important;
     color: #A30130 !important;
     border-left: 4px solid #A30130 !important;
-}
-body.dark-mode .badge-priority-alta, body.dark-mode .border-priority-alta {
-    background-color: rgba(255, 128, 150, 0.2) !important;
-    color: #ff8096 !important;
-    border-left-color: #ff8096 !important;
 }
 
 .badge-priority-media, .border-priority-media {
@@ -351,171 +258,12 @@ body.dark-mode .badge-priority-alta, body.dark-mode .border-priority-alta {
     color: #6E117C !important;
     border-left: 4px solid #6E117C !important;
 }
-body.dark-mode .badge-priority-media, body.dark-mode .border-priority-media {
-    background-color: rgba(210, 145, 230, 0.2) !important;
-    color: #d291e6 !important;
-    border-left-color: #d291e6 !important;
-}
 
 .badge-priority-baja, .border-priority-baja {
     background-color: rgba(9, 144, 50, 0.15) !important;
     color: #099032 !important;
     border-left: 4px solid #099032 !important;
 }
-body.dark-mode .badge-priority-baja, body.dark-mode .border-priority-baja {
-    background-color: rgba(120, 225, 150, 0.2) !important;
-    color: #78e196 !important; 
-    border-left-color: #78e196 !important;
-}
-
-.btn-group .btn.active, .btn-group .btn:active {
-    background-color: #2A6374 !important;
-    color: #ffffff !important;
-    border-color: #2A6374 !important;
-    font-weight: 600;
-    box-shadow: 0 0 8px rgba(42, 99, 116, 0.4);
-}
-body.dark-mode .btn-group .btn.active {
-    background-color: #6E117C !important; 
-    border-color: #6E117C !important;
-    color: #ffffff !important;
-}
-
-
-footer {
-    background-color: #0D204A !important; 
-    color: #ffffff !important;
-    padding: 1.5rem 0;
-    margin-top: auto;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-}
-body.dark-mode footer {
-    background-color: #121824 !important; 
-    color: #d1d5db !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-
-.card {
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-    border: 1px solid rgba(42, 99, 116, 0.15);
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(13, 32, 74, 0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
-}
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(13, 32, 74, 0.12);
-}
-
-body.dark-mode .card {
-    background: linear-gradient(135deg, #182238 0%, #131b2e 100%) !important;
-    border: 1px solid rgba(210, 145, 230, 0.15);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-
-#btnToggleDark {
-    background-color: rgba(42, 99, 116, 0.2);
-    border: 1.5px solid #2A6374;
-    color: #0D204A;
-    font-weight: 600;
-    backdrop-filter: blur(6px);
-    transition: all 0.25s ease-in-out;
-}
-#btnToggleDark:hover {
-    background-color: #2A6374;
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(42, 99, 116, 0.5);
-}
-
-body.dark-mode #btnToggleDark {
-    background-color: rgba(110, 17, 124, 0.25);
-    border: 1.5px solid #d291e6;
-    color: #f4f4f5;
-}
-body.dark-mode #btnToggleDark:hover {
-    background-color: #6E117C;
-    border-color: #6E117C;
-    color: #ffffff;
-    box-shadow: 0 0 12px rgba(110, 17, 124, 0.6);
-}
-
-#btnToggleDark {
-    background-color: #2A6374;
-    border: 1.5px solid #2A6374;
-    color: #ffffff !important;
-    font-weight: 600;
-    transition: all 0.25s ease-in-out;
-}
-#btnToggleDark:hover {
-    background-color: #0D204A;
-    border-color: #0D204A;
-    color: #ffffff !important;
-    box-shadow: 0 0 10px rgba(42, 99, 116, 0.4);
-}
-
-body.dark-mode #btnToggleDark {
-    background-color: #6E117C;
-    border: 1.5px solid #6E117C;
-    color: #ffffff !important;
-}
-body.dark-mode #btnToggleDark:hover {
-    background-color: #d291e6;
-    border-color: #d291e6;
-    color: #ffffff !important;
-    box-shadow: 0 0 12px rgba(110, 17, 124, 0.6);
-}
-
-
-.navbar, footer {
-    background-color: #0D204A !important;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-footer, footer p, footer a, .navbar .navbar-brand {
-    color: #ffffff !important;
-}
-
-body.dark-mode .navbar, 
-body.dark-mode footer {
-    background-color: #121824 !important;
-    border-color: rgba(255, 255, 255, 0.08) !important;
-}
-body.dark-mode footer, 
-body.dark-mode footer p, 
-body.dark-mode footer a,
-body.dark-mode .navbar .navbar-brand {
-    color: #f3f4f6 !important;
-}
-
-
-.card {
-    background: linear-gradient(145deg, #ffffff 0%, #f4f6f9 100%) !important;
-    border: 1px solid rgba(42, 99, 116, 0.2);
-    border-radius: 14px;
-    box-shadow: 0 8px 20px rgba(13, 32, 74, 0.07);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 25px rgba(13, 32, 74, 0.12);
-    border-color: rgba(42, 99, 116, 0.4);
-}
-
-body.dark-mode .card {
-    background: linear-gradient(145deg, #182238 0%, #101624 100%) !important;
-    border: 1px solid rgba(210, 145, 230, 0.2) !important;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-}
-
-body.dark-mode .card:hover {
-    border-color: rgba(210, 145, 230, 0.4) !important;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-}
-
 
 .card .badge.badge-priority-alta {
     background-color: #A30130 !important;
@@ -530,6 +278,24 @@ body.dark-mode .card:hover {
 .card .badge.badge-priority-baja {
     background-color: #099032 !important;
     color: #ffffff !important;
+}
+
+body.dark-mode .badge-priority-alta, body.dark-mode .border-priority-alta {
+    background-color: rgba(255, 128, 150, 0.2) !important;
+    color: #ff8096 !important;
+    border-left-color: #ff8096 !important;
+}
+
+body.dark-mode .badge-priority-media, body.dark-mode .border-priority-media {
+    background-color: rgba(210, 145, 230, 0.2) !important;
+    color: #d291e6 !important;
+    border-left-color: #d291e6 !important;
+}
+
+body.dark-mode .badge-priority-baja, body.dark-mode .border-priority-baja {
+    background-color: rgba(120, 225, 150, 0.2) !important;
+    color: #78e196 !important; 
+    border-left-color: #78e196 !important;
 }
 
 body.dark-mode .card .badge.badge-priority-alta {
@@ -583,23 +349,20 @@ body.dark-mode .card.border-priority-baja {
     border-bottom: 1px solid rgba(120, 225, 150, 0.2);
 }
 
-.social-icon {
-    color: #6c757d;
-    transition: color 0.2s ease;
+.badge-categoria {
+    background-color: rgba(33, 37, 41, 0.1);
+    color: #212529;
+    font-weight: 500;
 }
 
-.social-icon:hover {
-    color: #333333; 
+body.dark-mode .badge-categoria {
+    background-color: rgba(248, 249, 250, 0.85);
+    color: #212529;
 }
 
-body.dark-mode .social-icon {
-    color: #ffffff !important;
-}
-
-body.dark-mode .social-icon:hover {
-    color: #d291e6 !important; 
-}
-
+/* ==========================================================================
+   8. CALENDARIO Y SUS ELEMENTOS INTERNOS
+   ========================================================================== */
 #calendarDropdown {
     background-color: #2A6374;
     border: 1.5px solid #2A6374;
@@ -632,23 +395,45 @@ body.dark-mode #calendarDropdown.show {
     box-shadow: 0 0 12px rgba(110, 17, 124, 0.6);
 }
 
-.dropdown-menu {
-    background-color: #ffffff;
-    border: 1px solid rgba(42, 99, 116, 0.2);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(13, 32, 74, 0.12);
-    padding: 1rem;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+#calendarDaysContainer {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 6px !important;
 }
 
-body.dark-mode .dropdown-menu {
-    background-color: #182238 !important;
-    border: 1px solid rgba(210, 145, 230, 0.3) !important;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-    color: #f8f9fa !important;
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem; 
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-/* Corrección de los días del calendario en modo oscuro */
+.calendar-day:hover {
+    border-color: #adb5bd;
+    background-color: #f8f9fa;
+}
+
+.calendar-day.today {
+    border: 2px solid #198754;
+    font-weight: bold;
+}
+
+.calendar-day span {
+    color: inherit;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.calendar-day.has-task {
+    background-color: rgba(42, 183, 202, 0.15);
+    color: var(--accent-blue);
+}
+
 body.dark-mode .calendar-day {
     background-color: rgba(45, 35, 60, 0.6) !important;
     border: 1px solid rgba(210, 145, 230, 0.25) !important;
@@ -664,9 +449,13 @@ body.dark-mode .calendar-day span {
     color: #f3e8ff !important;
 }
 
-body.dark-mode .calendar-day.text-muted,
-body.dark-mode .calendar-day span.text-muted {
-    color: rgba(243, 232, 255, 0.4) !important;
+body.dark-mode .calendar-day span.text-dark {
+    color: #f4f4f5 !important;
+}
+
+body.dark-mode .calendar-day span.bg-dark {
+    background-color: #c77dff !important;
+    color: #120313 !important;
 }
 
 body.dark-mode .calendar-day.today {
@@ -674,23 +463,90 @@ body.dark-mode .calendar-day.today {
     font-weight: bold;
 }
 
-body.dark-mode .card .text-muted {
-    color: #adb5bd !important;
+/* ==========================================================================
+   9. COMPONENTES ADICIONALES (Post-its, Menús Desplegables, Toast, Animaciones)
+   ========================================================================== */
+.post-it {
+    background-color: rgba(245, 230, 211, 0.9);
+    padding: 10px;
+    border-radius: 6px;
+    width: 47%;
+    min-height: 80px;
+    box-shadow: 2px 4px 10px rgba(0,0,0,0.15);
+    font-size: 0.85rem;
+    position: relative;
+    transition: transform 0.2s ease;
 }
 
-body.dark-mode .card {
-    background-color: #212529;
-    color: #f8f9fa;
-    border-color: #343a40;
+.post-it:nth-child(odd) { transform: rotate(-1.5deg); background-color: #d291e6; }
+.post-it:nth-child(even) { transform: rotate(1.5deg); background-color: #78e196; }
+.post-it:hover { transform: scale(1.03) rotate(0deg); z-index: 2; }
+
+body.dark-mode .post-it {
+    background-color: rgba(60, 45, 75, 0.9);
+    color: #f3e8ff;
+    border: 1px solid rgba(168, 85, 247, 0.3);
 }
 
-.badge-categoria {
-    background-color: rgba(33, 37, 41, 0.1);
-    color: #212529;
-    font-weight: 500;
+body.dark-mode .post-it:nth-child(odd) { background-color: #d291e6; color: #f8f6f0; }
+body.dark-mode .post-it:nth-child(even) { background-color: #78e196; color: #f8f6f0; }
+
+.note-text:focus {
+    outline: none;
 }
 
-body.dark-mode .badge-categoria {
-    background-color: rgba(248, 249, 250, 0.85);
-    color: #212529;
+.dropdown-menu {
+    background-color: #ffffff;
+    border: 1px solid rgba(42, 99, 116, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(13, 32, 74, 0.12);
+    padding: 1rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.dropdown-menu .dropdown-item {
+    color: #212529 !important;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    color: #212529 !important;
+}
+
+[data-bs-theme="dark"] .dropdown-menu,
+.dark-mode .dropdown-menu,
+.dark .dropdown-menu,
+body.dark-mode .dropdown-menu {
+    background-color: #1e1e2f !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+[data-bs-theme="dark"] .dropdown-menu .dropdown-item,
+.dark-mode .dropdown-menu .dropdown-item,
+.dark .dropdown-menu .dropdown-item,
+body.dark-mode .dropdown-menu .dropdown-item {
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .dropdown-menu .dropdown-item:hover, 
+[data-bs-theme="dark"] .dropdown-menu .dropdown-item:focus,
+.dark-mode .dropdown-menu .dropdown-item:hover,
+.dark-mode .dropdown-menu .dropdown-item:focus,
+.dark .dropdown-menu .dropdown-item:hover,
+body.dark-mode .dropdown-menu .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+.toast-container {
+    z-index: 1056;
 }
