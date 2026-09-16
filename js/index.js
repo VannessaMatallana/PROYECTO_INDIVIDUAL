@@ -20,6 +20,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const mensajeEl = document.getElementById('mensajeBienvenida');
         const iconoEl = document.getElementById('iconoBienvenida');
         const modalElement = document.getElementById('modalBienvenida');
+        
+        const resumenContador = document.getElementById('resumenContadorPendientes');
+        const resumenBarra = document.getElementById('resumenBarraProgreso');
+        const resumenFechaMovil = document.getElementById('resumenFechaMovil');
+        const resumenFechaDesktop = document.getElementById('resumenFechaDesktop');
+
+        if (resumenContador) resumenContador.textContent = cantidad;
+        
+        const totalTareas = taskManager.tasks.length;
+        const completadas = totalTareas - cantidad;
+        const porcentaje = totalTareas > 0 ? Math.round((completadas / totalTareas) * 100) : 0;
+        if (resumenBarra) resumenBarra.style.width = `${porcentaje}%`;
+
+        const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const fechaTextoLargo = new Date().toLocaleDateString('es-ES', opcionesFecha);
+        if (resumenFechaMovil) resumenFechaMovil.textContent = fechaTextoLargo;
+        if (resumenFechaDesktop) resumenFechaDesktop.textContent = fechaTextoLargo;
 
         if (spanNumero && modalElement && typeof bootstrap !== 'undefined') {
             spanNumero.textContent = cantidad;
@@ -132,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function guardarCategoriaCustom(nuevaCat) {
         let customCats = obtenerCategoriasCustom();
-        if (!customCats.includes(nuevaCat) && ['Trabajo', 'Personal', 'Estudio', 'General'].indexOf(nuevaCat) === -1) {
+        if (!customCats.includes(nuevaCat) && ['Trabajo', 'Personal', 'Estudio', 'Otra'].indexOf(nuevaCat) === -1) {
             customCats.push(nuevaCat);
             localStorage.setItem(STORAGE_KEY_CATS, JSON.stringify(customCats));
             sincronizarSelectoresCategorias();
@@ -260,9 +277,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const counterPendientes = document.getElementById('counterPendientes');
         const counterCompletadas = document.getElementById('counterCompletadas');
 
-        if (counterTotal) counterTotal.innerHTML = `<i class="bi bi-clipboard-check me-1 text-secondary"></i> Total: ${total}`;
-        if (counterPendientes) counterPendientes.innerHTML = `<i class="bi bi-hourglass-split me-1"></i> Pendientes: ${pendientes}`;
-        if (counterCompletadas) counterCompletadas.innerHTML = `<i class="bi bi-check-circle me-1"></i> Completadas: ${completadas}`;
+        if (counterTotal) counterTotal.innerHTML = `Total: ${total}`;
+        if (counterPendientes) counterPendientes.innerHTML = `Pend: ${pendientes}`;
+        if (counterCompletadas) counterCompletadas.innerHTML = `Comp: ${completadas}`;
+
+        const resumenContador = document.getElementById('resumenContadorPendientes');
+        const resumenBarra = document.getElementById('resumenBarraProgreso');
+        if (resumenContador) resumenContador.textContent = pendientes;
+        const porcentaje = total > 0 ? Math.round((completadas / total) * 100) : 0;
+        if (resumenBarra) resumenBarra.style.width = `${porcentaje}%`;
     }
 
     if (newTaskCategorySelect) {
@@ -271,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 newTaskOtraContainer.classList.remove('d-none');
             } else {
                 newTaskOtraContainer.classList.add('d-none');
-                newTaskOtraInput.value = '';
+                if (newTaskOtraInput) newTaskOtraInput.value = '';
             }
         });
     }
@@ -316,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                  (tarea.description || '').toLowerCase().includes(textoBusqueda);
 
             let cumplePrioridad = !prioridadFiltro || prioridadFiltro === 'Todas' || tarea.prioridad === prioridadFiltro;
-            let categoriaTarea = tarea.categoria || 'General';
+            let categoriaTarea = tarea.categoria || 'Personal';
             let cumpleCategoria = !categoriaFiltro || categoriaFiltro === 'Todas' || categoriaTarea === categoriaFiltro;
             let cumpleFecha = !fechaFiltro || tarea.dueDate === fechaFiltro;
 
@@ -340,18 +363,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tareasFiltradas.forEach((tarea) => {
             const prioridadMostrar = tarea.prioridad || 'Media';
-            const categoriaMostrar = tarea.categoria || 'General';
+            const categoriaMostrar = tarea.categoria || 'Personal';
 
-            let clasePrioridadBadge = 'badge-priority-media';
-            let claseBordeCard = 'border-priority-media';
-
-            if (prioridadMostrar === 'Alta') {
-                clasePrioridadBadge = 'badge-priority-alta';
-                claseBordeCard = 'border-priority-alta';
-            } else if (prioridadMostrar === 'Baja') {
-                clasePrioridadBadge = 'badge-priority-baja';
-                claseBordeCard = 'border-priority-baja';
-            }
+            let clasePrioridadBadge = 'bg-secondary';
+            if (prioridadMostrar === 'Alta') clasePrioridadBadge = 'bg-danger';
+            else if (prioridadMostrar === 'Media') clasePrioridadBadge = 'bg-warning text-dark';
+            else if (prioridadMostrar === 'Baja') clasePrioridadBadge = 'bg-info text-dark';
 
             const estadoLogico = calcularEstadoTarea(tarea, hoy);
 
@@ -374,9 +391,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 badgeEstadoHTML = `<span class="badge bg-secondary small ms-1">Pendiente</span>`;
             }
 
-            const claseCompletadaCard = tarea.completada ? 'border-success bg-opacity-75 opacity-75' : claseBordeCard;
+            const claseCompletadaCard = tarea.completada ? 'border-success bg-light opacity-75' : '';
             const estiloTextoTitulo = tarea.completada ? 'text-decoration-line-through text-muted' : '';
-            const claseCategoriaBadge = 'badge-categoria';
 
             let subtasksHtml = `<div class="mt-2 pt-2 border-top">
                 <small class="fw-bold text-muted">Subtareas:</small>
@@ -402,13 +418,13 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
 
             const tarjetaHTML = `
-                <div class="card mb-2 shadow-sm ${claseCompletadaCard}" data-task-id="${tarea.id}">
+                <div class="card mb-3 shadow-sm ${claseCompletadaCard}" data-task-id="${tarea.id}">
                     <div class="card-body p-3">
                         <div class="d-flex justify-content-between align-items-start">
                             <h5 class="card-title h6 fw-bold task-title mb-1 ${estiloTextoTitulo}">${tarea.name}</h5>
                             <div>
                                 <span class="badge ${clasePrioridadBadge} small">${prioridadMostrar}</span>
-                                <span class="badge ${claseCategoriaBadge} small ms-1">${categoriaMostrar}</span>
+                                <span class="badge bg-light text-dark border small ms-1">${categoriaMostrar}</span>
                                 ${badgeEstadoHTML}
                             </div>
                         </div>
@@ -441,7 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const dueDate = document.getElementById('newTaskDateInput').value;
             const prioridad = document.querySelector('input[name="prioridad"]:checked')?.value || 'Alta';
             
-            let category = newTaskCategorySelect ? newTaskCategorySelect.value : 'General';
+            let category = newTaskCategorySelect ? newTaskCategorySelect.value : 'Personal';
             const guardarEnLista = document.getElementById('guardarCategoriaLista')?.checked;
             const customCategory = newTaskOtraInput ? newTaskOtraInput.value.trim() : '';
 
@@ -460,7 +476,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (category === 'Otra') {
                 category = customCategory;
-
                 if (guardarEnLista) {
                     guardarCategoriaCustom(category);
                 }
@@ -583,44 +598,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================
-    // 8. IMPORTAR Y EXPORTAR TAREAS (JSON)
+    // 8. FILTROS DE ENTRADA
     // ==========================================
-    document.getElementById('btnExportar')?.addEventListener('click', () => {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(taskManager.tasks, null, 2));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", "mis_tareas.json");
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
-        mostrarToast('Tareas exportadas a JSON con éxito.');
-    });
-
-    const btnImportar = document.getElementById('btnImportar');
-    const inputImportar = document.getElementById('inputImportar');
-    btnImportar?.addEventListener('click', () => inputImportar.click());
-
-    inputImportar?.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                const tasksImportadas = JSON.parse(event.target.result);
-                if (Array.isArray(tasksImportadas)) {
-                    taskManager.tasks = tasksImportadas;
-                    taskManager.currentId = tasksImportadas.reduce((max, t) => Math.max(max, t.id || 0), 0);
-                    taskManager.save();
-                    renderizarTareas();
-                    mostrarToast('Tareas importadas correctamente.');
-                }
-            } catch (error) {
-                alert('El archivo JSON no es válido.');
-            }
-        };
-        reader.readAsText(file);
-    });
-
     if (inputBusqueda) inputBusqueda.addEventListener('input', renderizarTareas);
     if (selectPrioridad) selectPrioridad.addEventListener('change', renderizarTareas);
     if (selectCategoria) selectCategoria.addEventListener('change', renderizarTareas);
@@ -636,10 +615,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const containerDays = document.getElementById('calendarDaysContainer');
         const labelMonthYear = document.getElementById('currentMonthYear');
         if (!containerDays || !labelMonthYear) return;
-
-        containerDays.style.display = 'grid';
-        containerDays.style.gridTemplateColumns = 'repeat(7, 1fr)';
-        containerDays.style.gap = '4px';
 
         containerDays.innerHTML = '';
 
@@ -657,7 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (let i = primerDiaIndex; i > 0; i--) {
             const diaPrevio = totalDiasMesAnterior - i + 1;
-            htmlCeldas += `<div class="p-1 text-muted opacity-50" style="font-size: 0.75rem; min-height: 24px;">${diaPrevio}</div>`;
+            htmlCeldas += `<div class="p-1 text-muted opacity-50 text-center" style="font-size: 0.7rem; min-height: 24px;">${diaPrevio}</div>`;
         }
 
         for (let dia = 1; dia <= totalDiasMes; dia++) {
@@ -668,11 +643,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const tareasDelDia = taskManager.tasks.filter(t => t.dueDate === fechaFormateada);
             const tieneTarea = tareasDelDia.length > 0;
             
-            const claseIndicador = tieneTarea ? 'bg-dark text-white rounded-circle fw-bold' : 'text-dark';
+            const claseIndicador = tieneTarea ? 'bg-primary text-white rounded-circle fw-bold shadow-sm' : 'text-dark';
             const estiloExtra = tieneTarea ? 'width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; margin: auto;' : 'padding: 2px;';
 
             htmlCeldas += `
-                <div class="calendar-day p-0 text-center pointer" data-date="${fechaFormateada}" style="font-size: 0.75rem; cursor: pointer; min-height: 24px;">
+                <div class="calendar-day p-0 text-center" data-date="${fechaFormateada}" style="font-size: 0.75rem; cursor: pointer; min-height: 24px;">
                     <span class="${claseIndicador}" style="${estiloExtra}">${dia}</span>
                 </div>
             `;
@@ -719,6 +694,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     const notesContainer = document.getElementById('notesContainer');
     const btnAddNote = document.getElementById('btnAddNote');
+    const btnAddNoteCard = document.querySelector('.btn-add-note-card');
 
     let savedNotes = JSON.parse(localStorage.getItem('quick_notes')) || [
         { id: 1, text: '¡Revisar entregas pendientes!' }
@@ -727,39 +703,51 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderNotes() {
         if (!notesContainer) return;
         notesContainer.innerHTML = '';
+        
         savedNotes.forEach((note, index) => {
-            notesContainer.innerHTML += `
-                <div class="post-it d-flex flex-column justify-content-between">
-                    <span contenteditable="true" class="note-text outline-0" data-index="${index}">${note.text}</span>
-                    <div class="text-end mt-1">
-                        <button class="btn btn-xs text-danger p-0 delete-note" data-index="${index}"><i class="bi bi-x-lg"></i></button>
-                    </div>
+            const noteDiv = document.createElement('div');
+            noteDiv.className = 'post-it d-flex flex-column justify-content-between p-2 mb-2';
+            noteDiv.innerHTML = `
+                <span contenteditable="true" class="note-text outline-0 small" data-index="${index}">${note.text}</span>
+                <div class="text-end mt-1">
+                    <button type="button" class="btn btn-xs text-danger p-0 delete-note" data-index="${index}"><i class="bi bi-x-lg"></i></button>
                 </div>
             `;
+            notesContainer.appendChild(noteDiv);
         });
+        
         localStorage.setItem('quick_notes', JSON.stringify(savedNotes));
     }
 
-    btnAddNote?.addEventListener('click', () => {
+    function agregarNotaRapida(e) {
+        e.preventDefault();
         savedNotes.push({ id: Date.now(), text: 'Nueva nota rápida...' });
         renderNotes();
-    });
+    }
+
+    btnAddNote?.addEventListener('click', agregarNotaRapida);
+    btnAddNoteCard?.addEventListener('click', agregarNotaRapida);
 
     notesContainer?.addEventListener('input', (e) => {
         if (e.target.classList.contains('note-text')) {
             const index = e.target.getAttribute('data-index');
-            savedNotes[index].text = e.target.textContent;
-            localStorage.setItem('quick_notes', JSON.stringify(savedNotes));
+            if (index !== null && savedNotes[index]) {
+                savedNotes[index].text = e.target.textContent;
+                localStorage.setItem('quick_notes', JSON.stringify(savedNotes));
+            }
         }
     });
 
     notesContainer?.addEventListener('click', (e) => {
         const deleteBtn = e.target.closest('.delete-note');
         if (deleteBtn) {
+            e.preventDefault();
             const index = deleteBtn.getAttribute('data-index');
-            savedNotes.splice(index, 1);
-            renderNotes();
-            mostrarToast('Nota eliminada.');
+            if (index !== null) {
+                savedNotes.splice(index, 1);
+                renderNotes();
+                mostrarToast('Nota eliminada.');
+            }
         }
     });
 
@@ -793,6 +781,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mensajeAnimoEl = document.getElementById('mensajeAnimo');
     const itemsAnimo = document.querySelectorAll('.item-animo');
 
+    const resumenIconoAnimo = document.getElementById('resumenIconoAnimo');
+    const resumenTextoAnimo = document.getElementById('resumenTextoAnimo');
+
     const mensajesPorAnimo = {
         'Genial': '¡Aprovecha esa energía para comerte el mundo hoy!',
         'Tranquila': 'Un estado mental sereno es el mejor aliado de la productividad.',
@@ -802,15 +793,19 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const hoyStr = new Date().toISOString().split('T')[0];
-    const registroGuardado = JSON.parse(localStorage.getItem('registro_animo_diario'));
+    let historialAnimo = JSON.parse(localStorage.getItem('historial_animo_general')) || [];
+    const regHoy = historialAnimo.find(item => item.fechaISO && item.fechaISO.startsWith(hoyStr));
 
-    if (registroGuardado && registroGuardado.fecha === hoyStr && textoAnimoSeleccionado) {
-        const itemEncontrado = document.querySelector(`.item-animo[data-animo="${registroGuardado.animo}"]`);
+    function actualizarUIAnimo(animo, htmlIcono) {
+        if (textoAnimoSeleccionado) textoAnimoSeleccionado.innerHTML = htmlIcono;
+        if (mensajeAnimoEl && mensajesPorAnimo[animo]) mensajeAnimoEl.textContent = mensajesPorAnimo[animo];
+        if (resumenTextoAnimo) resumenTextoAnimo.textContent = animo;
+    }
+
+    if (regHoy) {
+        const itemEncontrado = document.querySelector(`.item-animo[data-animo="${regHoy.animo}"]`);
         if (itemEncontrado) {
-            textoAnimoSeleccionado.innerHTML = itemEncontrado.innerHTML;
-            if (mensajesPorAnimo[registroGuardado.animo]) {
-                mensajeAnimoEl.textContent = mensajesPorAnimo[registroGuardado.animo];
-            }
+            actualizarUIAnimo(regHoy.animo, itemEncontrado.innerHTML);
         }
     }
 
@@ -818,20 +813,9 @@ document.addEventListener('DOMContentLoaded', () => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
             const animoSeleccionado = item.getAttribute('data-animo');
-            
-            if (textoAnimoSeleccionado) {
-                textoAnimoSeleccionado.innerHTML = item.innerHTML;
-            }
-
+            actualizarUIAnimo(animoSeleccionado, item.innerHTML);
             guardarRegistroAnimo(animoSeleccionado, item.innerHTML.trim());
-            
-            if (mensajeAnimoEl && mensajesPorAnimo[animoSeleccionado]) {
-                mensajeAnimoEl.textContent = mensajesPorAnimo[animoSeleccionado];
-            }
-
-            if (typeof mostrarToast === 'function') {
-                mostrarToast(`Estado de ánimo registrado: ${animoSeleccionado}`);
-            }
+            mostrarToast(`Estado de ánimo registrado: ${animoSeleccionado}`);
         });
     });
 
@@ -839,13 +823,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 12. HISTORIAL DE ESTADO DE ÁNIMO
     // ==========================================
-    function guardarRegistroAnimo(animoSeleccionado, htmlIcono) {
+    function guardarRegistroAnimo(animoSeleccionado, htmlIcono, fechaPersonalizada = null) {
         let historial = JSON.parse(localStorage.getItem('historial_animo_general')) || [];
-        const fechaHoraActual = new Date().toISOString(); 
-        const fechaFormateada = new Date().toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
-
-        const hoyStr = new Date().toISOString().split('T')[0];
-        historial = historial.filter(item => !item.fechaISO.startsWith(hoyStr));
+        const fechaObj = fechaPersonalizada ? new Date(fechaPersonalizada) : new Date();
+        const fechaHoraActual = fechaObj.toISOString(); 
+        const fechaFormateada = fechaObj.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
+        const fechaStr = fechaObj.toISOString().split('T')[0];
+        
+        historial = historial.filter(item => !item.fechaISO.startsWith(fechaStr));
 
         historial.unshift({
             fechaISO: fechaHoraActual,
@@ -855,7 +840,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (historial.length > 30) historial.pop();
-
         localStorage.setItem('historial_animo_general', JSON.stringify(historial));
         renderizarHistorialAnimo();
     }
@@ -863,44 +847,25 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarHistorialAnimo() {
         const listaHistorial = document.getElementById('listaHistorialAnimo');
         if (!listaHistorial) return;
-
+        
         let historial = JSON.parse(localStorage.getItem('historial_animo_general')) || [];
-        listaHistorial.innerHTML = '';
-
         if (historial.length === 0) {
-            listaHistorial.innerHTML = `<div class="text-center text-muted py-3">Aún no hay registros guardados.</div>`;
+            listaHistorial.innerHTML = '<span class="text-muted text-center d-block py-2">Sin registros aún.</span>';
             return;
         }
 
+        listaHistorial.innerHTML = '';
         historial.forEach(reg => {
-            const item = document.createElement('div');
-            item.className = 'list-group-item d-flex justify-content-between align-items-center px-0 py-2';
-            item.innerHTML = `
-                <div>
-                    <span class="d-flex align-items-center gap-2 fw-bold text-dark">
-                        ${reg.iconoHtml || ''} ${reg.animo}
-                    </span>
-                    <small class="text-muted" style="font-size: 0.7rem;">${reg.fechaVisual}</small>
-                </div>
+            const div = document.createElement('div');
+            div.className = 'list-group-item d-flex justify-content-between align-items-center py-2 px-2';
+            div.innerHTML = `
+                <span class="text-muted">${reg.fechaVisual}</span>
+                <span class="fw-bold d-flex align-items-center gap-1">${reg.iconoHtml}</span>
             `;
-            listaHistorial.appendChild(item);
+            listaHistorial.appendChild(div);
         });
     }
-
     renderizarHistorialAnimo();
-    
-    let historial = JSON.parse(localStorage.getItem('historial_animo_general')) || [];
-    const regHoy = historial.find(item => item.fechaISO.startsWith(hoyStr));
-    
-    if (regHoy && textoAnimoSeleccionado) {
-        const itemEncontrado = document.querySelector(`.item-animo[data-animo="${regHoy.animo}"]`);
-        if (itemEncontrado) {
-            textoAnimoSeleccionado.innerHTML = itemEncontrado.innerHTML;
-            if (mensajeAnimoEl && mensajesPorAnimo[regHoy.animo]) {
-                mensajeAnimoEl.textContent = mensajesPorAnimo[regHoy.animo];
-            }
-        }
-    }
 
 
     // ==========================================
